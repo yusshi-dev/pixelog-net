@@ -1,0 +1,205 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { formatDateYear } from '../utils/datetime';
+import { getPostSlug } from '../utils/slug';
+
+const allPosts = await getCollection("blog");
+const posts = allPosts.filter(post => !post.data.draft);
+const tags = [...new Set(posts.map((post: any) => post.data.tags).flat())];
+const pageTitle = "Tags";
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <p class="page-title">{pageTitle}</p>
+
+  <div class="tags-meta">
+    <span id="tags-count-tags">{tags.length} tags</span>
+    <span class="tags-meta-sep">·</span>
+    <span id="tags-count-articles">{posts.length} articles</span>
+  </div>
+
+  <div class="tag-cloud" id="tag-cloud">
+    {
+      tags.map((tag) => {
+        const count = posts.filter((post: any) => post.data.tags?.includes(tag)).length;
+        const weight = Math.min(Math.max(count / 5, 0.5), 1.5);
+        return (
+          <a
+            href={`#${tag}`}
+            class="tag-cloud-item"
+            style={`--w:0.40`}
+            >
+            {tag}
+            <span class="tc-count">{count}</span>
+          </a>
+        );
+      })
+    }
+  </div>
+
+  <hr class="divider" />
+
+  <div class="tag-detail-list" id="tag-detail-list">
+
+    {
+      tags.map((tag) => {
+        const filteredPosts = posts.filter((post: any) => post.data.tags?.includes(tag));
+        return (
+          <div class="tag-group" id={`${tag}`}>
+            <div class="tag-group-heading">
+              <button class="tag-group-name" onclick={`scrollToTag('${tag}')`}>{tag}</button>
+              <span class="tag-group-count">{filteredPosts.length} articles</span>
+            </div>
+            {
+              filteredPosts.map((post: any) => (
+                <a class="tag-article-row" href={`/posts/${getPostSlug(post)}/`}>
+                  <div>
+                    <div class="tag-article-title">{post.data.title}</div>
+                    <span class="tag-article-cat">{post.data.category}</span>
+                  </div>
+                  <time class="tag-article-date">{formatDateYear(post.data.published_at)}</time>
+                </a>
+              ))
+            }
+          </div>
+        );
+      })
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  /* ═══════════════════════════════
+     TAGS PAGE
+  ═══════════════════════════════ */
+  .tags-meta {
+    font-family: var(--font-mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .tags-meta-sep {
+    color: var(--line-strong);
+  }
+
+  /* タグクラウド */
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 3rem;
+  }
+  .tag-cloud-item {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: calc(0.6rem + var(--w, 0) * 0.28rem);
+    letter-spacing: 0.06em;
+    border: 1px solid var(--line-strong);
+    border-radius: 100px;
+    padding: 0.3em 0.85em;
+    color: var(--ink-mid);
+    text-decoration: none;
+    cursor: pointer;
+    background: rgba(26, 24, 20, calc(var(--w, 0) * 0.04));
+    transition:
+      background 0.15s,
+      border-color 0.15s,
+      color 0.15s;
+  }
+  .tag-cloud-item:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
+  .tag-cloud-item:hover .tc-count {
+    color: rgba(247, 245, 242, 0.5);
+  }
+  .tc-count {
+    font-size: 0.56rem;
+    color: var(--ink-faint);
+    transition: color 0.15s;
+  }
+
+  /* タグ詳細リスト */
+  .tag-detail-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .tag-group {
+    padding: 4rem 0 0.3rem;
+  }
+  .tag-group:first-child {
+    padding-top: 0;
+  }
+  .tag-group-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  .tag-group-name {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-alt);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    transition: color 0.2s;
+  }
+  .tag-group-name:hover {
+    color: var(--ink);
+  }
+  .tag-group-count {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+  }
+  .tag-article-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.2rem 1rem;
+    align-items: baseline;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+  .tag-article-row:hover .tag-article-title {
+    color: var(--accent-alt);
+  }
+  .tag-article-title {
+    font-size: 0.88rem;
+    color: var(--ink);
+    transition: color 0.2s;
+    line-height: 1.5;
+  }
+  .tag-article-cat {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: block;
+  }
+  .tag-article-date {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-faint);
+    white-space: nowrap;
+    align-self: start;
+    padding-top: 0.15rem;
+  }
+</style>

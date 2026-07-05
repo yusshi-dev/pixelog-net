@@ -1,0 +1,28 @@
+User-agent: *
+Disallow: /404/
+
+User-agent: Megalodon
+Disallow: /
+
+User-agent: ia_archiver
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+User-Agent: 360Spider
+Disallow: /
+
+Sitemap: https://pixelog.net/sitemap.xml

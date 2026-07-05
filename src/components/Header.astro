@@ -1,0 +1,68 @@
+---
+
+---
+<header>
+  <div class="header-inner">
+    <a href="/" class="site-name">
+        Pixelog
+    </a>
+    <nav>
+      <a href="/posts/" id="nav-blog">Posts</a>
+      <a href="/tags/" id="nav-about">Tags</a>
+      <a href="/about/" id="nav-about">About</a>
+      <!--<a href="#" id="nav-notes">Notes</a>-->
+    </nav>
+  </div>
+</header>
+
+
+
+
+<style>
+/* ─── Header ─── */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(247,245,242,0.88);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border-bottom: 1px solid var(--line);
+  }
+  .header-inner {
+    max-width: var(--max-w); margin: 0 auto;
+    padding: 0 var(--pad);
+    height: 54px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .site-name {
+    font-family: var(--font-en);
+    font-size: 1.15rem;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-decoration: none; cursor: pointer;
+    display: flex; align-items: baseline; gap: 0.15em;
+  }
+  .site-name-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent-alt);
+    display: inline-block; margin-bottom: 0.2em;
+  }
+  nav { display: flex; gap: 1.5rem; }
+  nav a {
+    font-family: var(--font-mono);
+    font-size: 0.67rem; font-weight: 300;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-light);
+    text-decoration: none;
+    transition: color 0.2s;
+    position: relative;
+  }
+  nav a::after {
+    content: ''; position: absolute; bottom: -2px; left: 0; right: 0;
+    height: 1px; background: var(--ink);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.25s var(--ease);
+  }
+  nav a:hover { color: var(--ink); }
+  nav a:hover::after, nav a.active::after { transform: scaleX(1); }
+  nav a.active { color: var(--ink); }
+</style>

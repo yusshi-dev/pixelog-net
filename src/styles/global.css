@@ -1,0 +1,60 @@
+:root {
+    --bg:         #f7f5f2;
+    --bg-2:       #efece7;
+    --bg-3:       #e8e4dd;
+    --ink:        #1a1814;
+    --ink-mid:    #4a4640;
+    --ink-light:  #8a847a;
+    --ink-faint:  #aba59c;
+    --accent:     #1a1814;
+    --accent-alt: #5c7a5e;
+    --line:       rgba(26,24,20,0.1);
+    --line-strong:rgba(26,24,20,0.18);
+
+    --font-ja:   'Noto Serif JP', serif;
+    --font-en:   'Instrument Serif', serif;
+    --font-mono: 'Geist Mono', monospace;
+
+    --max-w: 780px;
+    --pad:   clamp(1.25rem, 5vw, 2.5rem);
+
+    --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html {
+    font-size: clamp(1rem, 0.945rem + 0.388vw, 1.2rem);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-ja);
+    line-height: 1.9;
+    min-height: 100vh;
+  }
+
+
+    /* ─── Shared typography ─── */
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.63rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 1.5rem;
+  }
+
+  .page-title {
+    font-family: var(--font-en);
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    font-style: italic; font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin: 2.8rem 0 2rem;
+    line-height: 1.15;
+  }
+
+  hr.divider {
+    border: none; border-top: 1px solid var(--line);
+    margin: 3rem 0;
+  }

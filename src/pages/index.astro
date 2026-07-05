@@ -1,0 +1,191 @@
+---
+import { getCollection } from "astro:content";
+import { formatDateYear, formatISODatetime } from '../utils/datetime';
+import { getPostSlug } from '../utils/slug';
+import '../styles/global.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const pageTitle = "Pixelog";
+const allPosts =  await getCollection("blog");
+const posts = allPosts
+                .filter(post => !post.data.draft)
+                .sort((a, b) => b.data.published_at.getTime() - a.data.published_at.getTime())
+                .slice(0, 5);
+---
+<BaseLayout pageTitle={pageTitle}>
+  <div class="hero" id="top">
+    <div class="hero-headline">Pixelog</div>
+    <p class="hero-sub">技術に関するメモと日記</p>
+  </div>
+  
+
+  <div class="section-label">Recent Posts</div>
+  <ul class="post-list">
+	{
+		posts
+			.map(post => (
+				<li class="post-item">
+					<a href={`/posts/${getPostSlug(post)}/`} class="post-link">
+						<div>
+							<div class="post-title">{post.data.title}</div>
+							<span class="post-title-cat">{post.data.category}</span>
+						</div>
+						<time class="post-date" datetime={formatISODatetime(post.data.published_at)}>
+							{formatDateYear(post.data.published_at)}
+						</time>
+					</a>
+				</li>
+			))
+	}
+  </ul>
+  <a class="more-btn" href="/posts/">すべての記事</a>
+
+
+  <hr class="divider">
+
+	<div class="intro-strip">
+	<div class="intro-avatar">Y</div>
+	<div class="intro-text">
+		<span class="intro-name">yusshi</span>
+		財務会計ソフトウェアのエンジニアをやってます。にじさんじが好きです。
+	</div>
+	</div>
+
+</BaseLayout>
+
+<style>
+#top { padding-top: 3.5rem; }
+
+  .hero { margin-bottom: 3.5rem; }
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.63rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent-alt);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: inline-block;
+    width: 20px; height: 1px; background: var(--accent-alt);
+  }
+  .hero-headline {
+    font-family: var(--font-en);
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-style: italic; font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .hero-sub {
+    margin-top: 1rem;
+    font-size: 0.9rem; color: var(--ink-light);
+    font-weight: 300; line-height: 1.75;
+    max-width: 42ch;
+  }
+
+  /* Intro */
+  .intro-strip {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 1rem;
+    align-items: start;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 3.5rem;
+  }
+  .intro-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--bg-3);
+    border: 1px solid var(--line-strong);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-en); font-size: 1rem; font-style: italic;
+    color: var(--ink-light);
+    flex-shrink: 0;
+  }
+  .intro-text { font-size: 0.88rem; color: var(--ink-mid); line-height: 1.8; }
+  .intro-name {
+    font-family: var(--font-en);
+    font-style: italic; font-size: 0.95rem;
+    color: var(--ink); display: block; margin-bottom: 0.25rem;
+  }
+
+  /* Post list */
+  .post-list { list-style: none; margin-bottom: 1rem; }
+
+  .post-item {
+	 border-bottom: 1px solid var(--line);
+  }
+  .post-item:first-child { border-top: 1px solid var(--line); }
+  .post-link {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem 1rem;
+    align-items: baseline;
+    padding: 0.9rem 0;
+    cursor: pointer;
+    transition: none;
+	text-decoration: none;
+  }
+  .post-item:hover .post-title { color: var(--accent-alt); }
+
+  .post-title {
+    font-size: 0.92rem; color: var(--ink);
+    transition: color 0.2s;
+    line-height: 1.5;
+  }
+  .post-title-cat {
+    font-family: var(--font-mono);
+    font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-faint);
+    display: block; margin-top: 0.2rem;
+  }
+  .post-date {
+    font-family: var(--font-mono);
+    font-size: 0.63rem; letter-spacing: 0.04em;
+    color: var(--ink-faint);
+    white-space: nowrap;
+    align-self: start;
+    padding-top: 0.2rem;
+  }
+
+  /* Notes on top */
+  .notes-grid { display: flex; flex-direction: column; gap: 0; margin-bottom: 1rem; }
+  .note-card {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem 1rem;
+    align-items: start;
+    transition: none;
+  }
+  .note-card:first-child { border-top: 1px solid var(--line); }
+  .note-card:hover .note-body { color: var(--accent-alt); }
+  .note-body {
+    font-size: 0.88rem; color: var(--ink-mid); line-height: 1.75;
+    transition: color 0.2s;
+  }
+  .note-date {
+    font-family: var(--font-mono);
+    font-size: 0.63rem; letter-spacing: 0.04em;
+    color: var(--ink-faint);
+    white-space: nowrap;
+    padding-top: 0.2rem;
+  }
+
+  .more-btn {
+    font-family: var(--font-mono);
+    font-size: 0.63rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-light);
+    background: none; border: none; cursor: pointer;
+    padding: 0; margin-top: 0.8rem;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    transition: color 0.2s;
+	text-decoration: none;
+  }
+  .more-btn::after { content: '→'; }
+  .more-btn:hover { color: var(--accent-alt); }
+</style>

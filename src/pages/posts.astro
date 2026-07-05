@@ -1,0 +1,292 @@
+---
+import { getCollection } from "astro:content";
+import '../styles/global.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatDate, formatISODatetime } from '../utils/datetime';
+import { getPostSlug } from '../utils/slug';
+
+const allPosts =  await getCollection("blog");
+const posts =  allPosts.filter(post => !post.data.draft);
+
+const years = Array.from(
+  new Set(posts.map((post) => post.data.published_at.getFullYear()))
+).sort((a, b) => b - a);
+
+const pageTitle = "Posts";
+
+---
+
+<BaseLayout pageTitle={pageTitle}>
+    <p class="page-title">{ pageTitle }</p>
+
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <form action="https://duckduckgo.com/" method="get" target="_blank">
+          <input class="search-input" type="text" name="q" placeholder="記事を検索…" id="search-input">
+          <input type="hidden" name="sites" value="pixelog.net">
+        </form> 
+      </div>
+    </div>
+
+
+    <div id="article-list">
+      {
+        years.map((year) => {
+          // 2. その年度に該当する記事だけをフィルターし、日付の新しい順にソート
+          const postsInYear = posts
+            .filter((post) => post.data.published_at.getFullYear() === year)
+            .sort((a, b) => b.data.published_at.getTime() - a.data.published_at.getTime());
+
+          // 万が一、該当年度の記事がない場合はセクションを出力しない
+          if (postsInYear.length === 0) return null;
+
+          return (
+            <div class="year-section" data-year={year}>
+              <div class="year-heading"><span>{year}</span></div>
+              
+              {postsInYear.map((post: any) => (
+                <a class="article-row" data-cat={post.data.category} href={`/posts/${getPostSlug(post)}/`}>
+                  <div>
+                    <div class="article-title">{post.data.title}</div>
+                    <span class="article-cat-sm">{post.data.category}</span>
+                  </div>
+                  <time class="article-date-sm" datetime={formatISODatetime(post.data.published_at)}>
+                    {formatDate(post.data.published_at)}
+                  </time>
+                </a>
+              ))}
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  /* ═══════════════════════════════
+     BLOG LIST
+  ═══════════════════════════════ */
+  .filter-bar {
+    position: sticky; top: 54px; z-index: 80;
+    background: rgba(247,245,242,0.95);
+    backdrop-filter: blur(12px);
+    padding: 0.9rem 0;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .search-wrap { position: relative; margin-bottom: 0.75rem; }
+  .search-input {
+    width: 100%;
+    background: var(--bg-2);
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    padding: 0.5rem 0.9rem 0.5rem 2.2rem;
+    font-family: var(--font-ja); font-size: 0.85rem;
+    color: var(--ink); outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .search-input::placeholder { color: var(--ink-faint); }
+  .search-input:focus { border-color: var(--ink-light); background: var(--bg); }
+  .search-icon {
+    position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%);
+    font-size: 0.8rem; color: var(--ink-faint); pointer-events: none;
+  }
+  .cat-filters { display: flex; gap: 0.4rem; }
+  .cat-btn {
+    font-family: var(--font-mono);
+    font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+    background: transparent; border: 1px solid var(--line-strong);
+    border-radius: 100px;
+    padding: 0.28em 0.85em;
+    color: var(--ink-mid); cursor: pointer;
+    transition: all 0.15s;
+  }
+  .cat-btn:hover { border-color: var(--ink-light); color: var(--ink); }
+  .cat-btn.active { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+
+  .year-section { margin-bottom: 2rem; }
+  .year-heading {
+    font-family: var(--font-mono);
+    font-size: 0.63rem; letter-spacing: 0.14em;
+    color: var(--ink-faint);
+    margin-bottom: 0;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--line-strong);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .article-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.25rem 1rem;
+    align-items: baseline;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .article-row:hover .article-title { color: var(--accent-alt); }
+  .article-title { font-size: 0.9rem; color: var(--ink); transition: color 0.2s; }
+  .article-cat-sm {
+    font-family: var(--font-mono);
+    font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-faint); display: block;
+  }
+  .article-date-sm {
+    font-family: var(--font-mono);
+    font-size: 0.63rem; letter-spacing: 0.04em;
+    color: var(--ink-faint);
+    white-space: nowrap;
+    align-self: start; padding-top: 0.15rem;
+  }
+  /* ═══════════════════════════════
+     BLOG LIST
+  ═══════════════════════════════ */
+  .filter-bar {
+    position: sticky; top: 54px; z-index: 80;
+    background: rgba(247,245,242,0.95);
+    backdrop-filter: blur(12px);
+    padding: 0.9rem 0;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .search-wrap { position: relative; margin-bottom: 0.75rem; }
+  .search-input {
+    width: 100%;
+    background: var(--bg-2);
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    padding: 0.5rem 0.9rem 0.5rem 2.2rem;
+    font-family: var(--font-ja); font-size: 0.85rem;
+    color: var(--ink); outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .search-input::placeholder { color: var(--ink-faint); }
+  .search-input:focus { border-color: var(--ink-light); background: var(--bg); }
+  .search-icon {
+    position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%);
+    font-size: 0.8rem; color: var(--ink-faint); pointer-events: none;
+  }
+  .cat-filters { display: flex; gap: 0.4rem; }
+  .cat-btn {
+    font-family: var(--font-mono);
+    font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+    background: transparent; border: 1px solid var(--line-strong);
+    border-radius: 100px;
+    padding: 0.28em 0.85em;
+    color: var(--ink-mid); cursor: pointer;
+    transition: all 0.15s;
+  }
+  .cat-btn:hover { border-color: var(--ink-light); color: var(--ink); }
+  .cat-btn.active { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+
+  .year-section { margin-bottom: 2rem; }
+  .year-heading {
+    font-family: var(--font-mono);
+    font-size: 0.63rem; letter-spacing: 0.14em;
+    color: var(--ink-faint);
+    margin-bottom: 0;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--line-strong);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .article-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.25rem 1rem;
+    align-items: baseline;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+  }
+  .article-row:hover .article-title { color: var(--accent-alt); }
+  .article-title { font-size: 0.9rem; color: var(--ink); transition: color 0.2s; }
+  .article-cat-sm {
+    font-family: var(--font-mono);
+    font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-faint); display: block;
+  }
+  .article-date-sm {
+    font-family: var(--font-mono);
+    font-size: 0.63rem; letter-spacing: 0.04em;
+    color: var(--ink-faint);
+    white-space: nowrap;
+    align-self: start; padding-top: 0.15rem;
+  }
+  /* ═══════════════════════════════
+     BLOG LIST
+  ═══════════════════════════════ */
+  .filter-bar {
+    position: sticky; top: 54px; z-index: 80;
+    background: rgba(247,245,242,0.95);
+    backdrop-filter: blur(12px);
+    padding: 0.9rem 0;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .search-wrap { position: relative; margin-bottom: 0.75rem; }
+  .search-input {
+    width: 100%;
+    background: var(--bg-2);
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    padding: 0.5rem 0.9rem 0.5rem 2.2rem;
+    font-family: var(--font-ja); font-size: 0.85rem;
+    color: var(--ink); outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .search-input::placeholder { color: var(--ink-faint); }
+  .search-input:focus { border-color: var(--ink-light); background: var(--bg); }
+  .search-icon {
+    position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%);
+    font-size: 0.8rem; color: var(--ink-faint); pointer-events: none;
+  }
+  .cat-filters { display: flex; gap: 0.4rem; }
+  .cat-btn {
+    font-family: var(--font-mono);
+    font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+    background: transparent; border: 1px solid var(--line-strong);
+    border-radius: 100px;
+    padding: 0.28em 0.85em;
+    color: var(--ink-mid); cursor: pointer;
+    transition: all 0.15s;
+  }
+  .cat-btn:hover { border-color: var(--ink-light); color: var(--ink); }
+  .cat-btn.active { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+
+  .year-section { margin-bottom: 2rem; }
+  .year-heading {
+    font-family: var(--font-mono);
+    font-size: 0.63rem; letter-spacing: 0.14em;
+    color: var(--ink-faint);
+    margin-bottom: 0;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--line-strong);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .article-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.25rem 1rem;
+    align-items: baseline;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+  }
+  .article-row:hover .article-title { color: var(--accent-alt); }
+  .article-title { font-size: 0.9rem; color: var(--ink); transition: color 0.2s; }
+  .article-cat-sm {
+    font-family: var(--font-mono);
+    font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-faint); display: block;
+  }
+  .article-date-sm {
+    font-family: var(--font-mono);
+    font-size: 0.63rem; letter-spacing: 0.04em;
+    color: var(--ink-faint);
+    white-space: nowrap;
+    align-self: start; padding-top: 0.15rem;
+  }
+</style>
+
