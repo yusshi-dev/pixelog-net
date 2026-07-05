@@ -8,8 +8,8 @@ const { frontmatter } = Astro.props;
   <article>
     <div class="article-header">
         <div class="article-meta-row">
-        <time class="article-date" datetime={formatISODatetime(frontmatter.date)}>
-          {formatDateYear(frontmatter.date)}
+        <time class="article-date" datetime={formatISODatetime(frontmatter.published_at)}>
+          {formatDateYear(frontmatter.published_at)}
         </time>
         <span class="article-cat-badge">{frontmatter.category}</span>
         </div>
