@@ -1,15 +1,17 @@
 :root {
     --bg:         #f7f5f2;
-    --bg-2:       #efece7;
-    --bg-3:       #e8e4dd;
-    --ink:        #1a1814;
-    --ink-mid:    #4a4640;
-    --ink-light:  #8a847a;
-    --ink-faint:  #aba59c;
-    --accent:     #1a1814;
-    --accent-alt: #5c7a5e;
-    --line:       rgba(26,24,20,0.1);
-    --line-strong:rgba(26,24,20,0.18);
+    --bg-2:       #edeae4;
+    --bg-3:       #e2ddd6;
+
+    --ink:        #1c1a17;
+    --ink-mid:    #3a3530;
+    --ink-sub:    #5e574f;
+    --ink-mute:   #7a726a;
+
+    --accent-alt: #3d6b40;
+
+    --line:        rgba(28,26,23,0.14);
+    --line-strong: rgba(28,26,23,0.26);
 
     --font-ja:   'Noto Serif JP', serif;
     --font-en:   'Instrument Serif', serif;
@@ -40,7 +42,7 @@
   .section-label {
     font-family: var(--font-mono);
     font-size: 0.63rem; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--ink-faint);
+    color: var(--ink-mute);
     margin-bottom: 1.5rem;
   }
 

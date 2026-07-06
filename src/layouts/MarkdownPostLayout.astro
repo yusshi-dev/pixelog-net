@@ -45,9 +45,10 @@ const { frontmatter } = Astro.props;
     display: inline-flex; align-items: center; gap: 0.4rem;
     font-family: var(--font-mono);
     font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--ink-light);
+    color: var(--ink-sub);
     background: none; border: none; cursor: pointer;
     padding: 0; margin-top: 2.5rem;
+    text-decoration: none;
     transition: color 0.2s;
   }
   .back-link:hover { color: var(--accent-alt); }
@@ -56,7 +57,7 @@ const { frontmatter } = Astro.props;
   .article-meta-row {
     font-family: var(--font-mono);
     font-size: 0.63rem; letter-spacing: 0.1em;
-    color: var(--ink-faint);
+    color: var(--ink-mute);
     display: flex; gap: 1rem; margin-bottom: 1rem;
     flex-wrap: wrap; align-items: center;
   }
@@ -69,13 +70,15 @@ const { frontmatter } = Astro.props;
   .article-h1 {
     font-family: var(--font-ja);
     font-size: clamp(1.2rem, 3.5vw, 1.65rem);
-    font-weight: 500; line-height: 1.55;
-    color: var(--ink); letter-spacing: 0.01em;
+    font-weight: 500;
+    line-height: 1.55;
+    color: var(--ink);
+    letter-spacing: 0.01em;
   }
 
   .article-body {
     font-size: 0.95rem; line-height: 2.05;
-    color: var(--ink); font-weight: 300;
+    color: var(--ink); font-weight: 400;
   }
 
   .tags-row {
@@ -86,7 +89,7 @@ const { frontmatter } = Astro.props;
   .tags-label {
     font-family: var(--font-mono);
     font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--ink-faint); margin-right: 0.2rem;
+    color: var(--ink-mute); margin-right: 0.2rem;
   }
   .tag {
     font-family: var(--font-mono);
@@ -97,16 +100,38 @@ const { frontmatter } = Astro.props;
     transition: border-color 0.2s, color 0.2s;
     text-decoration: none;
   }
-  .tag:hover { border-color: var(--ink-light); color: var(--ink); }
+  .tag:hover { border-color: var(--ink-sub); color: var(--ink); }
 </style>
 
 <style is:global>
   .article-body p { margin-bottom: 1.5em; }
-  .article-body h2 {
+ .article-body h2 {
     font-family: var(--font-ja);
-    font-size: 1rem; font-weight: 500;
+    font-size: 1.18rem;
+    font-weight: 500;
     color: var(--ink);
-    margin: 2.2em 0 0.75em;
+    margin: 2.8em 0 0.85em;
+    padding-bottom: 0.4em;
+    border-bottom: 1.5px solid var(--line);
+    letter-spacing: 0.01em;
+  }
+  .article-body h3 {
+    font-family: var(--font-ja);
+    font-size: 1.03rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin: 2.0em 0 0.65em;
+    padding-left: 0.7em;
+    border-left: 3px solid var(--accent-alt);
+    letter-spacing: 0.01em;
+  }
+  .article-body h4 {
+    font-family: var(--font-ja);
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--ink-mid);
+    margin: 1.6em 0 0.5em;
+    letter-spacing: 0.01em;
   }
   .article-body code {
     font-family: var(--font-mono);
@@ -130,10 +155,13 @@ const { frontmatter } = Astro.props;
     background: none; border: none; padding: 0; color: inherit; font-size: 1em;
   }
   .article-body blockquote {
-    border-left: 2px solid var(--ink-faint);
-    padding: 0.2em 1.2em;
-    color: var(--ink-light);
-    font-style: italic; margin: 1.8em 0;
+    border-left: 3px solid var(--line-strong);  /* 2px → 3px */
+    padding: 0.3em 1.2em;
+    color: var(--ink-sub);                      /* light → sub */
+    font-style: italic;
+    margin: 1.8em 0;
+    background: var(--bg-2);
+    border-radius: 0 4px 4px 0;
   }
   .article-body img {
     max-width: 100%;
