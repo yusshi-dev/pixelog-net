@@ -170,7 +170,17 @@ const { frontmatter } = Astro.props;
   }
   .article-body ol,
   .article-body ul {
+    margin-bottom: 1.5em;
     padding-left: 2.25rem;
-    line-height: 1;
+    line-height: 1.75;
+  }
+  .article-body li {
+    margin-bottom: 0.5em;
+  }
+
+  .article-body a {
+    color: var(--accent-alt);
+    text-decoration: underline;
+    transition: color 0.2s;
   }
 </style>

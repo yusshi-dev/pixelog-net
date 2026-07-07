@@ -4,7 +4,10 @@
 <header>
   <div class="header-inner">
     <a href="/" class="site-name">
-        Pixelog
+      <svg viewBox="-436.56 67.062 1119 184" height="14" xmlns="http://www.w3.org/2000/svg">
+          <title>Pixelog</title>
+          <path class="header__svg" d="M-387.56 71.062h11c28 0 48 11 59 33 3 5 5 14 6 27 0 28-14 48-43 58-17 4-25 6-25 8v48c0 2-1 3-3 3h-51c-2 0-3-1-3-3v-167c0-4 16-6 49-7zm114-3h53c2 0 3 1 3 3v177c0 2-1 3-3 3h-53c-2 0-3-1-3-3v-177c0-2 1-3 3-3zm94 3h62l21 34c12-22 18-33 20-34h66c0 4-18 33-53 87l54 90-3 1h-62c-3-2-10-14-22-36h-1l-22 36h-65v-3l53-87-51-86 3-2zm203-3h110c2 0 4 1 4 3v49c0 2-2 3-4 3h-53v5h50c2 0 3 1 3 3v49c0 2-1 3-3 3h-50v9h57c2 1 3 2 3 4v50c0 2-2 3-4 3h-113c-2 0-3-1-3-3v-175c0-2 1-3 3-3zm167 0h52c2 0 3 1 3 3v122h57c2 0 4 1 4 3v49c0 2-2 3-4 3h-112c-2 0-3-1-3-3v-174c0-2 1-3 3-3zm226 3c33 0 57 17 72 52 4 12 6 24 6 37 0 53-25 83-75 91h-15c-33 0-56-19-69-58-3-8-5-19-5-33 0-47 23-77 70-89h16zm200-4h16c20 0 37 6 50 17-8 28-13 43-16 43l-41-5h-3c-24 0-36 12-36 38 0 23 13 34 38 34h1v-56l3-4h51c2 1 3 2 3 4v95c-15 11-36 16-64 16-41 0-68-17-84-52-4-10-6-21-6-31v-14c0-40 23-68 69-83l19-2z"/>
+      </svg>
     </a>
     <nav>
       <a href="/posts/" id="nav-blog">Posts</a>
@@ -40,6 +43,9 @@
     color: var(--ink);
     text-decoration: none; cursor: pointer;
     display: flex; align-items: baseline; gap: 0.15em;
+  }
+  .site-name svg {
+    fill: var(--ink-mute);
   }
   .site-name-dot {
     width: 5px; height: 5px; border-radius: 50%;

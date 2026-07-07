@@ -31,12 +31,6 @@ const pageTitle = "About";
     <p>
         <a target="_blank" rel="noopener" href="https://marketingplatform.google.com/about/analytics/terms/jp/">Google　ポリシーと規約</a>
     </p>
-    <h3>Google Adsense</h3>
-    <p>本サイトは「Google AdSense」を利用して広告を配信しております。広告が配信される過程で、Cookieやデバイス特有の情報、ロケーション情報、および当該デバイスから収集される情報が利用されることがあります。</p>    
-    <p>
-        <a target="_blank" rel="noopener" href="https://policies.google.com/technologies/ads?gl=jp">広告 – ポリシーと規約 – Google</a><br>
-        <a target="_blank" rel="noopener" href="https://adssettings.google.com/authenticated">広告設定ーGoogle</a>
-    </p>
     <h2>免責事項</h2>
     <p>本サイトで提供しているコンテンツは告知無しに変更・削除することがあります。また提供している情報を利用したことにより発生した損失については、責任を負いかねますのであらかじめご了承ください。</p>
   </div>
@@ -91,3 +85,10 @@ const pageTitle = "About";
   }
   .link-pill:hover { border-color: var(--ink); color: var(--ink); }
 </style>
+<style is:global>
+  .about-body a {
+    color: var(--accent-alt);
+    text-decoration: underline;
+    transition: color 0.2s;
+  }
+  </style>
