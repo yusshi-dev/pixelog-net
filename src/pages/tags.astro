@@ -47,7 +47,7 @@ const pageTitle = "Tags";
         return (
           <div class="tag-group" id={`${tag}`}>
             <div class="tag-group-heading">
-              <button class="tag-group-name" onclick={`scrollToTag('${tag}')`}>{tag}</button>
+              <span class="tag-group-name">{tag}</span>
               <span class="tag-group-count">{filteredPosts.length} articles</span>
             </div>
             {
@@ -149,14 +149,6 @@ const pageTitle = "Tags";
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--accent-alt);
-    cursor: pointer;
-    background: none;
-    border: none;
-    padding: 0;
-    transition: color 0.2s;
-  }
-  .tag-group-name:hover {
-    color: var(--ink);
   }
   .tag-group-count {
     font-family: var(--font-mono);

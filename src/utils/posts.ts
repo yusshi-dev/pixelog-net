@@ -11,5 +11,8 @@ export const getPublishedPosts = async (): Promise<Post[]> =>
 export const getTags = (posts: Post[]): string[] =>
   [...new Set(posts.flatMap((post) => post.data.tags ?? []))];
 
+export const getCategories = (posts: Post[]): string[] =>
+  [...new Set(posts.map((post) => post.data.category))];
+
 export const getYears = (posts: Post[]): number[] =>
   [...new Set(posts.map((post) => getJstYear(post.data.published_at)))].sort((a, b) => b - a);
