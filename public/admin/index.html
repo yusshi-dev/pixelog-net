@@ -4,9 +4,13 @@
     <meta charset="utf-8" />
     <meta name="robots" content="noindex,nofollow" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CMS</title>
+    <title>Sveltia CMS - Pixelog</title>
   </head>
   <body>
     <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+    <script>
+      // プレビューペインの本文をサイトの記事本文に近いサイズにする
+      CMS.registerPreviewStyle('/admin/preview.css');
+    </script>
   </body>
 </html>

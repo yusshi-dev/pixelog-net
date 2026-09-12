@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
 
 site_url: https://pixelog.net
-app_title: pixelog.net
+app_title: Sveltia CMS - Pixelog
 
 backend:
   name: github
@@ -53,6 +53,7 @@ collections:
       - { label: カテゴリ, field: category }
       - { label: 年, field: published_at, pattern: '\d{4}' }
 
+    # preview: false を付けたフィールドはプレビューペイン（2つ目のペイン）に表示されない
     fields:
       - label: タイトル
         name: title
@@ -66,6 +67,7 @@ collections:
         widget: datetime
         input_timezone: local
         default: '{{now}}'
+        preview: false
 
       # 決め打ちの選択肢。カテゴリを増やすときは options に追記する。
       # dropdown_threshold を 1 にすると選択肢が2つでもドロップダウンになる
@@ -79,17 +81,20 @@ collections:
         dropdown_threshold: 1
         default: 雑記
         required: true
+        preview: false
 
       - label: タグ
         name: tags
         widget: list
         default: []
         required: false
+        preview: false
 
       - label: 下書き
         name: draft
         widget: boolean
         default: false
+        preview: false
 
       - label: 本文
         name: body

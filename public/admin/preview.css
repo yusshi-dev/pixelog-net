@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500&display=swap');
+
+/*
+ * Sveltia CMS プレビューペイン用スタイル
+ *
+ * サイトの記事ページに寄せる。
+ *   横幅     : .page { max-width: 780px }            （--max-w）
+ *   タイトル : .article-h1 { font-size: clamp(1.2rem, 3.5vw, 1.65rem); font-weight: 500; line-height: 1.55 }
+ *   本文     : .article-body { font-size: 0.95rem; line-height: 2.05 }
+ *   書体/配色: --font-ja 'Noto Serif JP' / --bg #f7f5f2 / --ink #1c1a17
+ *
+ * デスクトップ（root ≒19.2px）換算: タイトル 約31.7px / 本文 約18.2px / h2 約22.7px / h3 約19.8px
+ *
+ * プレビューは iframe 内に描画され、管理画面の CSS 変数（--sui-*）は引き継がれないため、
+ * サイズはここで明示する。組み込みスタイルに確実に反映させるため !important を使用。
+ */
+
+/* サイトの配色・書体に合わせる */
+body {
+  margin: 0;
+  padding: 8px 16px;
+  background-color: #f7f5f2 !important;
+  color: #1c1a17;
+  font-family: 'Noto Serif JP', serif !important;
+  line-height: 1.9;
+}
+
+/* 記事の横幅をサイト（--max-w: 780px）に合わせて中央寄せ */
+[data-key-path] > * {
+  max-width: 780px;
+  margin-inline: auto;
+}
+
+/* プレビューのフィールドラベル（「タイトル」「本文」）を消す */
+[data-key-path='title'] > h4,
+[data-key-path='body'] > h4 {
+  display: none !important;
+}
+
+/* 記事タイトル（サイトの clamp(1.2rem, 3.5vw, 1.65rem) のデスクトップ換算 ≒31.7px） */
+[data-key-path='title'] p {
+  font-size: 32px !important;
+  font-weight: 500 !important;
+  line-height: 1.55 !important;
+}
+
+/* 本文（Markdown のレンダリング結果） */
+p,
+li,
+blockquote,
+td,
+th {
+  font-size: 18px !important;
+  line-height: 2.05 !important;
+}
+
+h2 {
+  font-size: 23px !important;
+}
+
+h3 {
+  font-size: 20px !important;
+}
+
+h4 {
+  font-size: 18px !important;
+}
+
+pre {
+  font-size: 15px !important;
+  line-height: 1.75 !important;
+}
+
+pre code {
+  font-size: 1em !important;
+}
