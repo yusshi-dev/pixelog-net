@@ -77,12 +77,14 @@ collections:
           - 技術メモ
           - 雑記
         dropdown_threshold: 1
+        default: 雑記
         required: true
 
       - label: タグ
         name: tags
         widget: list
         default: []
+        required: false
 
       - label: 下書き
         name: draft
