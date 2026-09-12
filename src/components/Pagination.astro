@@ -1,0 +1,40 @@
+---
+interface Props {
+  currentPage: number;
+  lastPage: number;
+  urlPrev?: string;
+  urlNext?: string;
+}
+
+const { currentPage, lastPage, urlPrev, urlNext } = Astro.props;
+---
+
+{
+  lastPage > 1 && (
+    <nav class="mt-14 flex items-center justify-center gap-10 text-sm" aria-label="ページ送り">
+      {urlPrev ? (
+        <a href={urlPrev} class="text-brandink hover:underline hover:underline-offset-4">
+          ← 前へ
+        </a>
+      ) : (
+        <span class="text-ink3 opacity-40" aria-disabled="true">
+          ← 前へ
+        </span>
+      )}
+
+      <span class="font-mono text-[0.8125rem] text-ink3">
+        {currentPage} / {lastPage}
+      </span>
+
+      {urlNext ? (
+        <a href={urlNext} class="text-brandink hover:underline hover:underline-offset-4">
+          次へ →
+        </a>
+      ) : (
+        <span class="text-ink3 opacity-40" aria-disabled="true">
+          次へ →
+        </span>
+      )}
+    </nav>
+  )
+}

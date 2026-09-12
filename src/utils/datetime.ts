@@ -1,22 +1,17 @@
 import { JST_TIME_ZONE } from "./jst";
 
 /**
- * Dateオブジェクトを日本時間ベースの表示用文字列（例: Jul 23）に変換する
+ * Dateオブジェクトを日本時間の「2026.07.07」形式に変換する（一覧・記事の表示用）
  */
-export const formatDate = (date: Date): string =>
-  new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    timeZone: JST_TIME_ZONE
-  }).format(date);
-
-export const formatDateYear = (date: Date): string =>
-  new Intl.DateTimeFormat("en-US", {
+export const formatYmd = (date: Date): string =>
+  new Intl.DateTimeFormat("ja-JP", {
     year: "numeric",
-    month: "short",
-    day: "numeric",
-    timeZone: JST_TIME_ZONE
-  }).format(date);
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: JST_TIME_ZONE,
+  })
+    .format(date)
+    .replace(/\//g, ".");
 
 /**
  * Dateオブジェクトを日本時間のISO 8601文字列（datetime属性用）に変換する
@@ -26,7 +21,7 @@ export const formatISODatetime = (date: Date): string => {
     timeZone: JST_TIME_ZONE,
     year: "numeric", month: "2-digit", day: "2-digit",
     hour: "2-digit", minute: "2-digit", second: "2-digit",
-    hour12: false
+    hour12: false,
   });
 
   const parts = formatter.formatToParts(date);

@@ -1,0 +1,36 @@
+---
+interface Props {
+  years: number[];
+}
+
+const { years } = Astro.props;
+---
+
+<div class="relative">
+  <select
+    id="archive-year"
+    class="w-full appearance-none rounded-lg bg-surface py-2.5 pl-3.5 pr-10 text-[1rem] text-ink"
+  >
+    <option value="">年を選択</option>
+    {years.map((year) => <option value={`/posts/#${year}`}>{year}年</option>)}
+  </select>
+
+  <span
+    class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-ink3"
+    aria-hidden="true"
+  >
+    <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <path d="m6 9 6 6 6-6"></path>
+    </svg>
+  </span>
+</div>
+
+<script>
+  const select = document.getElementById("archive-year");
+
+  if (select) {
+    select.addEventListener("change", () => {
+      if (select.value) window.location.href = select.value;
+    });
+  }
+</script>

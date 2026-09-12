@@ -1,0 +1,24 @@
+---
+import type { Post } from "../utils/posts";
+import { getPostSlug } from "../utils/slug";
+
+interface Props {
+  posts: Post[];
+}
+
+const { posts } = Astro.props;
+---
+
+<nav aria-label="最近の投稿">
+  <ul class="space-y-2.5 text-[0.9375rem] leading-[1.7] text-ink2">
+    {
+      posts.map((post) => (
+        <li>
+          <a href={`/posts/${getPostSlug(post)}/`} class="transition hover:text-brandink">
+            {post.data.title}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

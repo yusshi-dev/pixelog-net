@@ -1,0 +1,16 @@
+---
+interface Props {
+  heading: string;
+  /** 見出しをフォーム部品の <label for> にする場合の対象 id */
+  forId?: string;
+}
+
+const { heading, forId } = Astro.props;
+---
+
+<section>
+  <h2 class="mb-3 text-[0.9375rem] font-bold">
+    {forId ? <label for={forId}>{heading}</label> : heading}
+  </h2>
+  <slot />
+</section>

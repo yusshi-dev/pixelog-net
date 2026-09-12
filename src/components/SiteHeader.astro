@@ -1,0 +1,94 @@
+---
+import { Image } from "astro:assets";
+import heroImage from "../assets/hero.jpg";
+import ThemeToggle from "./ThemeToggle.astro";
+import { NAV_ITEMS, SITE, type NavKey } from "../consts";
+
+interface Props {
+  current?: NavKey;
+  isHome?: boolean;
+}
+
+const { current, isHome = false } = Astro.props;
+
+// ホームではワードマークが文書の見出しになる
+const Wordmark = isHome ? "h1" : "div";
+---
+
+<section class="hero on-hero relative flex items-center justify-center bg-ink">
+  <Image
+    src={heroImage}
+    alt=""
+    widths={[640, 960, 1200]}
+    sizes="100vw"
+    loading="eager"
+    class="absolute inset-0 h-full w-full object-cover"
+    aria-hidden="true"
+  />
+  <div class="absolute inset-0 bg-[rgba(20,18,16,0.52)]" aria-hidden="true"></div>
+
+  <Wordmark class="relative px-6 text-center text-white [text-shadow:0_1px_14px_rgba(0,0,0,0.4)]">
+    <a href="/" class="font-en text-[1.75rem] font-bold uppercase tracking-[0.22em] sm:text-[2.25rem]">Pixelog</a>
+    <p class="mt-2 text-[0.875rem] text-white/85">{SITE.description}</p>
+  </Wordmark>
+
+  <div class="absolute inset-x-0 top-0">
+    <div class="mx-auto flex h-16 max-w-page items-center justify-between px-6">
+      <details class="relative">
+        <summary class="grid h-11 w-11 cursor-pointer place-items-center rounded-full text-white/85 transition hover:bg-white/15 hover:text-white">
+          <span class="sr-only">メニュー</span>
+          <svg
+            viewBox="0 0 24 24"
+            class="h-5 w-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <path d="M4 7h16M4 12h16M4 17h16"></path>
+          </svg>
+        </summary>
+
+        <nav
+          class="absolute left-0 top-[calc(100%+0.4rem)] grid min-w-[12rem] gap-1 rounded-card bg-surface p-2 text-ink shadow-popover"
+          aria-label="メイン"
+        >
+          {
+            NAV_ITEMS.map((item) => (
+              <a
+                href={item.href}
+                aria-current={current === item.key ? "page" : undefined}
+                class:list={[
+                  "rounded px-3 py-2.5 text-sm hover:bg-canvas",
+                  current === item.key ? "" : "text-ink2 hover:text-ink",
+                ]}
+              >
+                {item.label}
+              </a>
+            ))
+          }
+          <ThemeToggle />
+        </nav>
+      </details>
+
+      <a
+        href="#search-input"
+        class="grid h-11 w-11 place-items-center rounded-full text-white/85 transition hover:bg-white/15 hover:text-white"
+      >
+        <span class="sr-only">検索へ移動</span>
+        <svg
+          viewBox="0 0 24 24"
+          class="h-5 w-5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4.5 4.5"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

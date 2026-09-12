@@ -1,50 +1,59 @@
 ---
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import '../styles/global.css';
-import { formatDocumentTitle } from '../utils/title';
+import "../styles/global.css";
+import { SITE } from "../consts";
+import { formatDocumentTitle } from "../utils/title";
 
 interface Props {
   /** ページ固有のタイトル。省略するとサイト名のみになる（ホーム用） */
   documentTitle?: string;
+  /** meta description */
+  description?: string;
 }
-const { documentTitle } = Astro.props;
----
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="utf-8">
-<meta name="generator" content={Astro.generator} />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{formatDocumentTitle(documentTitle)}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="alternate" type="application/rss+xml" title="Pixelog" href="/atom.xml" />
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5NYKFVQ1GE"></script>
-<script is:inline>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-5NYKFVQ1GE');
-</script>
+const { documentTitle, description = SITE.description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{formatDocumentTitle(documentTitle)}</title>
+    <meta name="description" content={description} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/atom.xml" />
+
+    {/* 描画前に配色を確定してちらつきを防ぐ */}
+    <script is:inline>
+      (function () {
+        var saved = null;
+        try {
+          saved = localStorage.getItem("pixelog-theme");
+        } catch (e) {}
+        var os = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        if ((saved || os) === "dark") document.documentElement.classList.add("dark");
+      })();
+    </script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5NYKFVQ1GE"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-5NYKFVQ1GE');
+    </script>
   </head>
-  <body>
-    <Header />
-    <main class="page active">
-      <div class="main__inner">
-        <slot />
-      </div>
-    </main>
-    <Footer />
+
+  <body class="bg-canvas font-sans text-[1.0625rem] leading-[1.9] text-ink antialiased">
+    <slot />
   </body>
 </html>
-
-
-<style>
-/* ─── Page Shell ─── */
-  .page { display: none; max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad) 6rem; }
-  .page.active { display: block; animation: up 0.3s var(--ease) both; }
-  @keyframes up { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
-</style>

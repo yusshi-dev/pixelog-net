@@ -1,0 +1,34 @@
+---
+import type { Counted } from "../utils/posts";
+
+interface Props {
+  tags: Counted[];
+  /** 先頭から何件まで出すか。省略すると全件 */
+  limit?: number;
+}
+
+const { tags, limit } = Astro.props;
+const shown = limit ? tags.slice(0, limit) : tags;
+
+/** 件数が多いタグほど大きく濃くする */
+const styleFor = (count: number): string => {
+  if (count >= 20) return "text-[1rem] text-ink";
+  if (count >= 10) return "text-[0.9375rem] text-ink2";
+  if (count >= 4) return "text-[0.875rem] text-ink3";
+  return "text-[0.8125rem] text-ink3";
+};
+---
+
+<div class="flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
+  {
+    shown.map((tag) => (
+      <a
+        href={`/tags/${tag.name}/`}
+        class:list={["transition hover:text-brandink", styleFor(tag.count)]}
+      >
+        {tag.name}
+        <span class="ml-1 font-mono text-[0.7rem] text-ink3">{tag.count}</span>
+      </a>
+    ))
+  }
+</div>

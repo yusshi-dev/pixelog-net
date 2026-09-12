@@ -1,0 +1,28 @@
+---
+import { formatISODatetime, formatYmd } from "../utils/datetime";
+import { getExcerpt } from "../utils/excerpt";
+import type { Post } from "../utils/posts";
+import { getPostSlug } from "../utils/slug";
+
+interface Props {
+  post: Post;
+  titleTag?: "h2" | "h3";
+}
+
+const { post, titleTag: Title = "h2" } = Astro.props;
+
+const excerpt = getExcerpt(post);
+const href = `/posts/${getPostSlug(post)}/`;
+---
+
+<article>
+  <time datetime={formatISODatetime(post.data.published_at)} class="font-mono text-[0.8125rem] text-ink3">
+    {formatYmd(post.data.published_at)}
+  </time>
+
+  <Title class="mt-1.5 text-[1.125rem] font-bold leading-snug tracking-[-0.01em]">
+    <a href={href} class="hover:text-brandink">{post.data.title}</a>
+  </Title>
+
+  {excerpt && <p class="mt-2 text-[0.9375rem] leading-[1.85] text-ink2">{excerpt}</p>}
+</article>

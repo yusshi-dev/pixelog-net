@@ -1,0 +1,35 @@
+---
+import SiteLayout from "../../../layouts/SiteLayout.astro";
+import PageHeading from "../../../components/PageHeading.astro";
+import PostList from "../../../components/PostList.astro";
+import Pagination from "../../../components/Pagination.astro";
+import { POSTS_PER_PAGE } from "../../../consts";
+import { getPublishedPosts, getTags, postsWithTag } from "../../../utils/posts";
+
+export async function getStaticPaths({ paginate }) {
+  const posts = await getPublishedPosts();
+
+  return getTags(posts).flatMap((tag) =>
+    paginate(postsWithTag(posts, tag), {
+      params: { tag },
+      pageSize: POSTS_PER_PAGE,
+      props: { tag },
+    }),
+  );
+}
+
+const { page, tag } = Astro.props;
+---
+
+<SiteLayout documentTitle={tag} current="tags" description={`タグ「${tag}」の記事一覧`}>
+  <PageHeading label="タグ" title={tag} count={page.total} />
+
+  <PostList posts={page.data} />
+
+  <Pagination
+    currentPage={page.currentPage}
+    lastPage={page.lastPage}
+    urlPrev={page.url.prev}
+    urlNext={page.url.next}
+  />
+</SiteLayout>

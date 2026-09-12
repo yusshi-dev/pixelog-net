@@ -1,0 +1,36 @@
+---
+// 配色の切り替え。選択は localStorage に保存し、次回訪問時に <head> の
+// インラインスクリプトが描画前に復元する。
+---
+
+<button
+  type="button"
+  id="theme-toggle"
+  class="rounded px-3 py-2.5 text-left text-sm text-ink2 hover:bg-canvas hover:text-ink"
+></button>
+
+<script>
+  const root = document.documentElement;
+  const button = document.getElementById("theme-toggle");
+
+  if (button) {
+    const sync = () => {
+      const isDark = root.classList.contains("dark");
+      button.textContent = `表示: ${isDark ? "ダーク" : "ライト"}`;
+      button.setAttribute(
+        "aria-label",
+        `配色を切り替える（現在: ${isDark ? "ダーク" : "ライト"}）`,
+      );
+    };
+
+    button.addEventListener("click", () => {
+      const isDark = root.classList.toggle("dark");
+      try {
+        localStorage.setItem("pixelog-theme", isDark ? "dark" : "light");
+      } catch (e) {}
+      sync();
+    });
+
+    sync();
+  }
+</script>

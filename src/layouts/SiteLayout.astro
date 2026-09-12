@@ -1,0 +1,45 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import Sidebar from "../components/Sidebar.astro";
+import type { NavKey } from "../consts";
+import { getSiteSummary } from "../utils/site";
+
+interface Props {
+  documentTitle?: string;
+  description?: string;
+  /** グローバルナビで現在地として扱う項目 */
+  current?: NavKey;
+  /** ホーム（ヒーローのワードマークを h1 にする） */
+  isHome?: boolean;
+}
+
+const { documentTitle, description, current, isHome = false } = Astro.props;
+
+// サイドバーの集計は全ページ共通なので、ここで1回だけ組み立てて配る
+const summary = await getSiteSummary();
+---
+
+<BaseLayout documentTitle={documentTitle} description={description}>
+  <a
+    href="#main"
+    class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:text-canvas"
+  >
+    本文へスキップ
+  </a>
+
+  <SiteHeader current={current} isHome={isHome} />
+
+  <div class="mx-auto max-w-page px-6 py-12 lg:py-16">
+    <div class="grid gap-14 lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-20">
+      <main id="main">
+        <slot />
+      </main>
+
+      <Sidebar summary={summary} />
+    </div>
+  </div>
+
+  <SiteFooter />
+</BaseLayout>

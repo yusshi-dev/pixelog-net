@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Pixelog — 案5: tealマストヘッド（5年前版の忠実な書き起こし）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    var saved = null;
+    try { saved = localStorage.getItem('pixelog-theme'); } catch (e) {}
+    var os = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    if ((saved || os) === 'dark') document.documentElement.classList.add('dark');
+  })();
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  /*
+    案5: 5年前のデザイン（Anatole系 Hexoテーマのカスタマイズ）の忠実な書き起こし。
+    「今風にアップデートした点」は各所のコメントと、回答本文に理由を記載。
+  */
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          canvas:  'var(--canvas)',
+          surface: 'var(--surface)',
+          ink:     'var(--ink)',
+          ink2:    'var(--ink2)',
+          ink3:    'var(--ink3)',
+          sea:     'var(--sea)',
+          sea2:    'var(--sea2)',
+          seaink:  'var(--seaink)',
+          line:    'var(--line)',
+          code:    'var(--code)',
+        },
+        fontFamily: {
+          sans:  ['"Zen Kaku Gothic New"', 'system-ui', 'sans-serif'],
+          en:    ['"IBM Plex Sans"', '"Zen Kaku Gothic New"', 'system-ui', 'sans-serif'],
+          mono:  ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+        },
+        maxWidth: { page: '56rem' },
+      },
+    },
+  };
+</script>
+<style>
+  :root {
+    --canvas:  #f1f0ef;
+    --surface: #ffffff;
+    --ink:     #2f3236;
+    --ink2:    #5a5f66;
+    --ink3:    #6b7078;   /* 現代化: 当時の薄いグレーはAA未達だったため暗くした */
+    --sea:     #2d817a;   /* 現代化: 白文字がAAを満たす深さに（当時は 2.9:1 → 4.6:1） */
+    --sea2:    #256b65;   /* フッター用にさらに一段深く（半透明の白文字もAAを満たす） */
+    --seaink:  #1a6f68;   /* 文字・リンク用 */
+    --line:    rgba(47, 50, 54, 0.12);
+    --code:    #f6f6f5;
+  }
+  .dark {
+    --canvas:  #17181a;
+    --surface: #212326;
+    --ink:     #e8e9ea;
+    --ink2:    #b0b4ba;
+    --ink3:    #8b9096;
+    --sea:     #2d817a;
+    --sea2:    #1f5f5a;
+    --seaink:  #5fc7bd;
+    --line:    rgba(232, 233, 234, 0.14);
+    --code:    #2a2d31;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { text-rendering: optimizeLegibility; }
+
+  :focus-visible {
+    outline: 2px solid var(--seaink);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+  .on-band :focus-visible { outline-color: #ffffff; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+
+<body class="bg-canvas font-sans text-[1.0625rem] leading-[1.9] text-ink antialiased">
+
+<a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:text-canvas">本文へスキップ</a>
+
+<!-- ============================================================
+     案5 / 一覧ページ
+     ============================================================ -->
+
+<!-- マストヘッド（当時は画像。現代化: SVGで描き直し） -->
+<header class="on-band relative flex h-28 items-center justify-center sm:h-32">
+  <svg viewBox="0 0 1200 130" preserveAspectRatio="none" class="absolute inset-0 h-full w-full" aria-hidden="true">
+    <rect width="1200" height="130" fill="var(--sea)"/>
+    <g fill="#ffffff">
+      <polygon points="120,0 300,0 190,130 10,130"  opacity="0.07"/>
+      <polygon points="380,0 470,0 360,130 270,130" opacity="0.05"/>
+      <polygon points="620,0 820,0 710,130 510,130" opacity="0.07"/>
+      <polygon points="900,0 1010,0 900,130 790,130" opacity="0.05"/>
+    </g>
+  </svg>
+  <a href="#" class="relative font-en text-[1.5rem] font-light uppercase tracking-[0.3em] text-white sm:text-[2rem]">Pixelog</a>
+</header>
+
+<!-- 現代化: 当時はグローバルナビが無かったので最小限の1行を追加 -->
+<nav class="relative mx-auto flex max-w-page items-center justify-center gap-6 px-6 py-5 text-[0.8125rem]" aria-label="メイン">
+  <a href="#" aria-current="page" class="font-medium text-ink">記事</a>
+  <a href="#" class="text-ink2 hover:text-seaink">カテゴリ</a>
+  <a href="#" class="text-ink2 hover:text-seaink">タグ</a>
+  <a href="#" class="text-ink2 hover:text-seaink">このサイト</a>
+  <button type="button" class="theme-toggle absolute right-6 hidden text-[0.75rem] text-ink3 hover:text-ink sm:block"></button>
+</nav>
+
+<div class="mx-auto max-w-page px-6 pb-16">
+  <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_14rem]">
+
+    <!-- ---------- 左：記事一覧カード ---------- -->
+    <main id="main">
+      <div class="overflow-hidden rounded-lg bg-surface shadow-sm">
+
+        <!-- パンくずバー -->
+        <div class="border-b border-line px-6 py-3.5">
+          <nav class="flex items-center gap-2 text-[0.8125rem]" aria-label="パンくず">
+            <span class="font-medium text-ink" aria-current="page">ホーム</span>
+          </nav>
+        </div>
+
+        <ol class="divide-y divide-line">
+
+          <li>
+            <a href="#" class="group flex items-center gap-5 px-6 py-5 transition hover:bg-canvas">
+              <time datetime="2026-07-07" class="w-[5.5rem] shrink-0 font-mono text-[0.8125rem] text-ink3">2026.07.07</time>
+              <span class="min-w-0 flex-1 text-[1rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">足の指を骨折した</span>
+              <span class="shrink-0 text-[1.25rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="group flex items-center gap-5 px-6 py-5 transition hover:bg-canvas">
+              <time datetime="2026-07-05" class="w-[5.5rem] shrink-0 font-mono text-[0.8125rem] text-ink3">2026.07.05</time>
+              <span class="min-w-0 flex-1 text-[1rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">ブログをAstroでリニューアル</span>
+              <span class="shrink-0 text-[1.25rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="group flex items-center gap-5 px-6 py-5 transition hover:bg-canvas">
+              <time datetime="2024-12-31" class="w-[5.5rem] shrink-0 font-mono text-[0.8125rem] text-ink3">2024.12.31</time>
+              <span class="min-w-0 flex-1 text-[1rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">HexoのテーマでTailwind CSSを利用する</span>
+              <span class="shrink-0 text-[1.25rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="group flex items-center gap-5 px-6 py-5 transition hover:bg-canvas">
+              <time datetime="2023-12-31" class="w-[5.5rem] shrink-0 font-mono text-[0.8125rem] text-ink3">2023.12.31</time>
+              <span class="min-w-0 flex-1 text-[1rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">AutoHotkeyでキーラベルからキーの名前に変換</span>
+              <span class="shrink-0 text-[1.25rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="group flex items-center gap-5 px-6 py-5 transition hover:bg-canvas">
+              <time datetime="2022-11-21" class="w-[5.5rem] shrink-0 font-mono text-[0.8125rem] text-ink3">2022.11.21</time>
+              <span class="min-w-0 flex-1 text-[1rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">AutoHotkeyのGUIでボタンを隠す</span>
+              <span class="shrink-0 text-[1.25rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="group flex items-center gap-5 px-6 py-5 transition hover:bg-canvas">
+              <time datetime="2022-07-22" class="w-[5.5rem] shrink-0 font-mono text-[0.8125rem] text-ink3">2022.07.22</time>
+              <span class="min-w-0 flex-1 text-[1rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">ブログを書きたい欲</span>
+              <span class="shrink-0 text-[1.25rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="group flex items-center gap-5 px-6 py-5 transition hover:bg-canvas">
+              <time datetime="2022-07-20" class="w-[5.5rem] shrink-0 font-mono text-[0.8125rem] text-ink3">2022.07.20</time>
+              <span class="min-w-0 flex-1 text-[1rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">AutoHotkeyでEclipseの左ペインにフォーカス</span>
+              <span class="shrink-0 text-[1.25rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="group flex items-center gap-5 px-6 py-5 transition hover:bg-canvas">
+              <time datetime="2022-07-19" class="w-[5.5rem] shrink-0 font-mono text-[0.8125rem] text-ink3">2022.07.19</time>
+              <span class="min-w-0 flex-1 text-[1rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">GsonでjsonのタイムスタンプをDate型に変換</span>
+              <span class="shrink-0 text-[1.25rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="group flex items-center gap-5 px-6 py-5 transition hover:bg-canvas">
+              <time datetime="2022-07-18" class="w-[5.5rem] shrink-0 font-mono text-[0.8125rem] text-ink3">2022.07.18</time>
+              <span class="min-w-0 flex-1 text-[1rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">SQLiteのSQL文メモ</span>
+              <span class="shrink-0 text-[1.25rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="group flex items-center gap-5 px-6 py-5 transition hover:bg-canvas">
+              <time datetime="2022-04-07" class="w-[5.5rem] shrink-0 font-mono text-[0.8125rem] text-ink3">2022.04.07</time>
+              <span class="min-w-0 flex-1 text-[1rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">AutoHotkeyでホームポジションから離れずにカーソルを移動</span>
+              <span class="shrink-0 text-[1.25rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="group flex items-center gap-5 px-6 py-5 transition hover:bg-canvas">
+              <time datetime="2022-04-06" class="w-[5.5rem] shrink-0 font-mono text-[0.8125rem] text-ink3">2022.04.06</time>
+              <span class="min-w-0 flex-1 text-[1rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">AutoHotkeyでCapsLock(F13)とAltとjの組み合わせが特定のキーボードで動かない</span>
+              <span class="shrink-0 text-[1.25rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="group flex items-center gap-5 px-6 py-5 transition hover:bg-canvas">
+              <time datetime="2022-04-05" class="w-[5.5rem] shrink-0 font-mono text-[0.8125rem] text-ink3">2022.04.05</time>
+              <span class="min-w-0 flex-1 text-[1rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">AutoHotkeyでWindows10をダークモードへ切り替える</span>
+              <span class="shrink-0 text-[1.25rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </li>
+
+        </ol>
+
+        <!-- ページ送り -->
+        <div class="flex items-center justify-between border-t border-line px-6 py-4 text-[0.875rem]">
+          <span class="text-ink3 opacity-45" aria-disabled="true">‹ Newer</span>
+          <span class="inline-flex items-center gap-1.5 rounded border border-line px-3 py-1 font-mono text-[0.8125rem] text-ink2">
+            1
+            <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            / 5
+          </span>
+          <a href="#" class="text-seaink hover:underline hover:underline-offset-4">Older ›</a>
+        </div>
+      </div>
+    </main>
+
+    <!-- ---------- 右：サイドバー ---------- -->
+    <aside class="space-y-8" aria-label="サイドバー">
+
+      <section>
+        <h2 class="text-center text-[0.6875rem] font-medium uppercase tracking-[0.22em] text-ink3">Category</h2>
+        <div class="mx-auto mt-3 h-px w-9 bg-line" aria-hidden="true"></div>
+        <nav class="mt-4" aria-label="カテゴリー">
+          <a href="#" class="flex items-center justify-between border-t border-line px-3 py-2.5 text-[0.875rem] text-ink2 transition hover:text-seaink">
+            <span>技術メモ</span><span class="font-mono text-[0.75rem] text-ink3">[67]</span>
+          </a>
+          <a href="#" class="flex items-center justify-between border-t border-line px-3 py-2.5 text-[0.875rem] text-ink2 transition hover:text-seaink">
+            <span>雑記</span><span class="font-mono text-[0.75rem] text-ink3">[21]</span>
+          </a>
+        </nav>
+      </section>
+
+      <section>
+        <h2 class="text-center text-[0.6875rem] font-medium uppercase tracking-[0.22em] text-ink3">Tag</h2>
+        <div class="mx-auto mt-3 h-px w-9 bg-line" aria-hidden="true"></div>
+        <div class="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <a href="#" class="text-[0.9375rem] text-ink hover:text-seaink">Web制作</a>
+          <a href="#" class="text-[0.9375rem] text-ink hover:text-seaink">CSS</a>
+          <a href="#" class="text-[0.8125rem] text-ink2 hover:text-seaink">HTML</a>
+          <a href="#" class="text-[0.875rem] text-ink2 hover:text-seaink">Hexo</a>
+          <a href="#" class="text-[0.8125rem] text-ink3 hover:text-seaink">JavaScript</a>
+          <a href="#" class="text-[0.8125rem] text-ink3 hover:text-seaink">AutoHotkey</a>
+          <a href="#" class="text-[0.8125rem] text-ink3 hover:text-seaink">EJS</a>
+          <a href="#" class="text-[0.75rem] text-ink3 hover:text-seaink">Netlify</a>
+          <a href="#" class="text-[0.75rem] text-ink3 hover:text-seaink">Node.js</a>
+          <a href="#" class="text-[0.75rem] text-ink3 hover:text-seaink">Eclipse</a>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-center text-[0.6875rem] font-medium uppercase tracking-[0.22em] text-ink3">Archive</h2>
+        <div class="mx-auto mt-3 h-px w-9 bg-line" aria-hidden="true"></div>
+        <div class="relative mt-4">
+          <!-- 現代化: プレースホルダのみだったのでラベルを追加 -->
+          <label for="archive1" class="sr-only">月を選択</label>
+          <select id="archive1" class="w-full appearance-none rounded border border-line bg-surface px-3 py-2.5 text-[1rem] text-ink2">
+            <option>月を選択</option>
+            <option>2026年7月</option>
+            <option>2024年12月</option>
+            <option>2023年12月</option>
+            <option>2022年11月</option>
+            <option>2022年7月</option>
+            <option>2022年4月</option>
+            <option>2020年5月</option>
+          </select>
+          <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-ink3" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-center text-[0.6875rem] font-medium uppercase tracking-[0.22em] text-ink3">Search</h2>
+        <div class="mx-auto mt-3 h-px w-9 bg-line" aria-hidden="true"></div>
+        <form action="https://duckduckgo.com/" method="get" target="_blank" rel="noopener" class="relative mt-4">
+          <label for="q1" class="sr-only">記事を検索</label>
+          <input id="q1" name="q" type="search" placeholder="記事を検索" autocomplete="off"
+                 class="w-full rounded border border-line bg-surface py-2.5 pl-3.5 pr-11 text-[1rem] text-ink placeholder:text-ink3">
+          <input type="hidden" name="sites" value="pixelog.net">
+          <button type="submit" class="absolute right-0.5 top-0.5 grid h-10 w-10 place-items-center rounded text-ink3 hover:bg-canvas hover:text-ink">
+            <span class="sr-only">検索する</span>
+            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+          </button>
+        </form>
+      </section>
+
+    </aside>
+  </div>
+</div>
+
+<footer class="on-band bg-sea2 py-9 text-center">
+  <nav class="flex justify-center gap-6 text-[0.8125rem] text-white" aria-label="フッター">
+    <a href="#" class="hover:underline hover:underline-offset-4">Home</a>
+    <a href="#" class="hover:underline hover:underline-offset-4">Contact</a>
+    <a href="#" class="hover:underline hover:underline-offset-4">Privacy Policy</a>
+  </nav>
+  <p class="mt-4 text-[0.75rem] text-white/90">Powered by Astro</p>
+  <p class="mt-1 font-mono text-[0.6875rem] text-white/75">© PIXELOG 2026</p>
+</footer>
+
+<!-- ============================================================
+     案5 / 記事ページ（サイドバーは上と同じ構成）
+     ============================================================ -->
+
+<div class="mx-auto max-w-page px-6 py-14">
+  <div class="rounded-lg border border-dashed border-line px-4 py-3 font-mono text-[0.75rem] text-ink3">
+    ここから下は「記事ページ」の見本です（デザインではなく、モックの区切り）
+  </div>
+</div>
+
+<header class="on-band relative flex h-28 items-center justify-center sm:h-32">
+  <svg viewBox="0 0 1200 130" preserveAspectRatio="none" class="absolute inset-0 h-full w-full" aria-hidden="true">
+    <rect width="1200" height="130" fill="var(--sea)"/>
+    <g fill="#ffffff">
+      <polygon points="120,0 300,0 190,130 10,130"  opacity="0.07"/>
+      <polygon points="380,0 470,0 360,130 270,130" opacity="0.05"/>
+      <polygon points="620,0 820,0 710,130 510,130" opacity="0.07"/>
+      <polygon points="900,0 1010,0 900,130 790,130" opacity="0.05"/>
+    </g>
+  </svg>
+  <a href="#" class="relative font-en text-[1.5rem] font-light uppercase tracking-[0.3em] text-white sm:text-[2rem]">Pixelog</a>
+</header>
+
+<nav class="relative mx-auto flex max-w-page items-center justify-center gap-6 px-6 py-5 text-[0.8125rem]" aria-label="メイン（記事ページ）">
+  <a href="#" class="text-ink2 hover:text-seaink">記事</a>
+  <a href="#" class="text-ink2 hover:text-seaink">カテゴリ</a>
+  <a href="#" class="text-ink2 hover:text-seaink">タグ</a>
+  <a href="#" class="text-ink2 hover:text-seaink">このサイト</a>
+  <button type="button" class="theme-toggle absolute right-6 hidden text-[0.75rem] text-ink3 hover:text-ink sm:block"></button>
+</nav>
+
+<div class="mx-auto max-w-page px-6 pb-16">
+  <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_14rem]">
+
+    <main id="main2">
+      <div class="overflow-hidden rounded-lg bg-surface shadow-sm">
+
+        <!-- パンくずバー（当時は ホーム / Web / Hexo / 現在地） -->
+        <div class="border-b border-line px-6 py-3.5">
+          <nav class="flex flex-wrap items-center gap-2 text-[0.8125rem]" aria-label="パンくず">
+            <a href="#" class="text-seaink hover:underline hover:underline-offset-4">ホーム</a>
+            <span class="text-ink3" aria-hidden="true">/</span>
+            <a href="#" class="text-seaink hover:underline hover:underline-offset-4">技術メモ</a>
+            <span class="text-ink3" aria-hidden="true">/</span>
+            <a href="#" class="text-seaink hover:underline hover:underline-offset-4">Hexo</a>
+            <span class="text-ink3" aria-hidden="true">/</span>
+            <span class="font-medium text-ink" aria-current="page">Hexoの月別アーカイブをプルダウン式(select要素)にする</span>
+          </nav>
+        </div>
+
+        <article class="px-6 py-8">
+          <p class="font-mono text-[0.8125rem] text-ink3">公開: 2020.05.06</p>
+          <h1 class="mt-2 text-[1.5rem] font-bold leading-snug tracking-[-0.015em] text-ink">
+            Hexoの月別アーカイブをプルダウン式(select要素)にする
+          </h1>
+
+          <div class="mt-8 max-w-[38rem] text-[1.0625rem] leading-[1.95] text-ink2">
+
+            <p class="mb-6">Hexoでプルダウン式の月別アーカイブをサイドバーに置く方法。</p>
+
+            <p class="mb-6">
+              Hexoでサイドバーに月別アーカイブを設置する際は、あらかじめ用意されている<a href="#" class="text-seaink underline underline-offset-4">Helper</a>を使うのが簡単です。
+            </p>
+
+            <pre class="my-6 overflow-x-auto rounded border border-line bg-code p-4 font-mono text-[0.8125rem] leading-[1.75] text-ink"><code>&lt;%- list_archives() %&gt;</code></pre>
+
+            <p class="mb-6">簡単なのですが、これには問題がありまして、プルダウン式に対応していません。</p>
+
+            <p class="mb-6">
+              アーカイブが増えれば増えるほど、サイドバーはどんどん下に長くなってしまうので、プルダウン式で選べるようにしたいところ。なので、無理矢理実装してみよう、というのがこの記事の趣旨です。
+            </p>
+
+            <h2 class="mb-4 mt-12 text-[1.25rem] font-bold leading-tight text-ink">イメージ画像</h2>
+
+            <figure class="my-6 rounded bg-code p-6 text-center">
+              <img src="../content/posts/2020-05-06-hexo-monthly-archive-dropdown-menu/1.png"
+                   alt="プルダウン式の月別アーカイブのスクリーンショット"
+                   loading="lazy" class="mx-auto max-w-full">
+              <figcaption class="mt-4 text-[0.8125rem] leading-relaxed text-ink3">
+                このブログのサイドバーに設置してあるものです。(2020年5月時点)
+              </figcaption>
+            </figure>
+
+            <p class="mb-6">（追記：画像では「月を選択」の文字が選べるようになっていますが、選べないように変更しました）</p>
+
+            <h2 class="mb-4 mt-12 text-[1.25rem] font-bold leading-tight text-ink">実装方法</h2>
+
+            <p class="mb-6">テンプレートエンジンはEJSです。</p>
+
+            <pre class="my-6 overflow-x-auto rounded border border-line bg-code p-4 font-mono text-[0.8125rem] leading-[1.75] text-ink"><code>&lt;%
+let arr = [];
+site.posts.each(function(post){
+  arr.push(post.date.format('YYYY年MM月'))
+})
+
+var listMonth = arr
+  .sort().reverse()
+  .filter(function(val, i, self){
+     return i === self.indexOf(val);
+   });
+
+let archives = [];
+for(let i=0; i&lt;listMonth.length; i++){
+  archives[i] = {
+    name: `${listMonth[i]} (${countPost(listMonth[i])})`,
+    path: path(listMonth[i])
+  }
+}
+
+function countPost(month){
+  return arr.filter(function(x){return x=== month}).length;
+}
+
+function path(month){
+  return url_for(`${config.archive_dir}/${month.slice(0,4)}/${month.slice(5,7)}/`);
+}
+%&gt;
+
+&lt;h4 class="&lt;%= block %&gt;__title"&gt;ARCHIVE&lt;/h4&gt;
+&lt;select class="archive-list" onchange="location.href=this.value;"&gt;
+  &lt;option
+    disabled
+    &lt;%if(!is_month()){%&gt;selected&lt;%}%&gt;&gt;
+    月を選択
+  &lt;/option&gt;
+  &lt;% for(let i=0; i&lt;archives.length; i++){ %&gt;
+    &lt;option
+      value="&lt;%= archives[i].path %&gt;"
+      &lt;% if(is_current(archives[i].path)){%&gt;selected&lt;%}%&gt;&gt;
+      &lt;%= archives[i].name %&gt;
+    &lt;/option&gt;
+  &lt;%}%&gt;
+&lt;/select&gt;</code></pre>
+
+            <p class="mb-6">select要素の本体部分のみなので、サイドバーのタイトルなどはデザインに合わせて調整してください。</p>
+
+            <p class="mb-6">月別ページではselected属性を用いて、そのページに対応する月が最初から選ばれた状態になります。</p>
+
+            <p class="mb-6">また、7行目の<code class="rounded border border-line bg-code px-1.5 py-0.5 font-mono text-[0.8em] text-ink">.reverse()</code>を取り除くと昇順になります。</p>
+
+            <p class="mb-6">
+              _config.ymlから<code class="rounded border border-line bg-code px-1.5 py-0.5 font-mono text-[0.8em] text-ink">archive_generator</code>の設定でmonthlyをtrueにするのをお忘れなく。（どうやらmonthlyをtrueにするにはyearlyをtrueにするのが必須のようです...）
+            </p>
+
+            <pre class="my-6 overflow-x-auto rounded border border-line bg-code p-4 font-mono text-[0.8125rem] leading-[1.75] text-ink"><code>archive_generator:
+  per_page: 0
+  yearly: true
+  monthly: true
+  daily: false
+  order_by: -date</code></pre>
+
+            <h2 class="mb-4 mt-12 text-[1.25rem] font-bold leading-tight text-ink">やっていること</h2>
+
+            <p class="mb-6">
+              カテゴリーリストのように、月別のリストが収められている変数が無かったので、<code class="rounded border border-line bg-code px-1.5 py-0.5 font-mono text-[0.8em] text-ink">site.posts.data</code>から全ての記事の日付を取り出し、moment.jsで年と月だけの形に加工し、ダブっているものをカウントしてその数を連想配列におさめ、降順に並べ替え、ループでoptionタグに出す..みたいな泥臭いことをやっています。
+            </p>
+
+            <p class="mb-6">
+              月別ページの場合は、もともとHexoに用意されている変数<code class="rounded border border-line bg-code px-1.5 py-0.5 font-mono text-[0.8em] text-ink">page.year</code> <code class="rounded border border-line bg-code px-1.5 py-0.5 font-mono text-[0.8em] text-ink">page.month</code>らと比較し、同じならselected属性を付けます。
+            </p>
+
+            <p class="mb-6">もっと賢い方法があるかも...</p>
+
+            <h2 class="mb-4 mt-12 text-[1.25rem] font-bold leading-tight text-ink">参考記事</h2>
+
+            <a href="#" class="block rounded border border-line px-4 py-3 text-[0.875rem] font-medium text-seaink transition hover:bg-code">
+              JavaScriptの配列で要素のカウントと連想配列にする方法 - suzu6
+            </a>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <aside class="space-y-8" aria-label="サイドバー（記事ページ）">
+
+      <section>
+        <h2 class="text-center text-[0.6875rem] font-medium uppercase tracking-[0.22em] text-ink3">Category</h2>
+        <div class="mx-auto mt-3 h-px w-9 bg-line" aria-hidden="true"></div>
+        <nav class="mt-4" aria-label="カテゴリー">
+          <a href="#" class="flex items-center justify-between border-t border-line px-3 py-2.5 text-[0.875rem] text-ink2 transition hover:text-seaink">
+            <span>技術メモ</span><span class="font-mono text-[0.75rem] text-ink3">[67]</span>
+          </a>
+          <a href="#" class="flex items-center justify-between border-t border-line px-3 py-2.5 text-[0.875rem] text-ink2 transition hover:text-seaink">
+            <span>雑記</span><span class="font-mono text-[0.75rem] text-ink3">[21]</span>
+          </a>
+        </nav>
+      </section>
+
+      <section>
+        <h2 class="text-center text-[0.6875rem] font-medium uppercase tracking-[0.22em] text-ink3">Tag</h2>
+        <div class="mx-auto mt-3 h-px w-9 bg-line" aria-hidden="true"></div>
+        <div class="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <a href="#" class="text-[0.9375rem] text-ink hover:text-seaink">Web制作</a>
+          <a href="#" class="text-[0.9375rem] text-ink hover:text-seaink">CSS</a>
+          <a href="#" class="text-[0.8125rem] text-ink2 hover:text-seaink">HTML</a>
+          <a href="#" class="text-[0.875rem] text-ink2 hover:text-seaink">Hexo</a>
+          <a href="#" class="text-[0.8125rem] text-ink3 hover:text-seaink">JavaScript</a>
+          <a href="#" class="text-[0.8125rem] text-ink3 hover:text-seaink">AutoHotkey</a>
+          <a href="#" class="text-[0.8125rem] text-ink3 hover:text-seaink">EJS</a>
+          <a href="#" class="text-[0.75rem] text-ink3 hover:text-seaink">Netlify</a>
+          <a href="#" class="text-[0.75rem] text-ink3 hover:text-seaink">Node.js</a>
+          <a href="#" class="text-[0.75rem] text-ink3 hover:text-seaink">Eclipse</a>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-center text-[0.6875rem] font-medium uppercase tracking-[0.22em] text-ink3">Archive</h2>
+        <div class="mx-auto mt-3 h-px w-9 bg-line" aria-hidden="true"></div>
+        <div class="relative mt-4">
+          <label for="archive2" class="sr-only">月を選択</label>
+          <select id="archive2" class="w-full appearance-none rounded border border-line bg-surface px-3 py-2.5 text-[1rem] text-ink2">
+            <option>月を選択</option>
+            <option>2026年7月</option>
+            <option>2024年12月</option>
+            <option>2023年12月</option>
+            <option>2022年11月</option>
+            <option>2022年7月</option>
+            <option>2022年4月</option>
+            <option>2020年5月</option>
+          </select>
+          <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-ink3" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-center text-[0.6875rem] font-medium uppercase tracking-[0.22em] text-ink3">Search</h2>
+        <div class="mx-auto mt-3 h-px w-9 bg-line" aria-hidden="true"></div>
+        <form action="https://duckduckgo.com/" method="get" target="_blank" rel="noopener" class="relative mt-4">
+          <label for="q2" class="sr-only">記事を検索</label>
+          <input id="q2" name="q" type="search" placeholder="記事を検索" autocomplete="off"
+                 class="w-full rounded border border-line bg-surface py-2.5 pl-3.5 pr-11 text-[1rem] text-ink placeholder:text-ink3">
+          <input type="hidden" name="sites" value="pixelog.net">
+          <button type="submit" class="absolute right-0.5 top-0.5 grid h-10 w-10 place-items-center rounded text-ink3 hover:bg-canvas hover:text-ink">
+            <span class="sr-only">検索する</span>
+            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+          </button>
+        </form>
+      </section>
+
+    </aside>
+  </div>
+</div>
+
+<footer class="on-band bg-sea2 py-9 text-center">
+  <nav class="flex justify-center gap-6 text-[0.8125rem] text-white" aria-label="フッター">
+    <a href="#" class="hover:underline hover:underline-offset-4">Home</a>
+    <a href="#" class="hover:underline hover:underline-offset-4">Contact</a>
+    <a href="#" class="hover:underline hover:underline-offset-4">Privacy Policy</a>
+  </nav>
+  <p class="mt-4 text-[0.75rem] text-white/90">Powered by Astro</p>
+  <p class="mt-1 font-mono text-[0.6875rem] text-white/75">© PIXELOG 2026</p>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var buttons = document.querySelectorAll('.theme-toggle');
+
+    function sync() {
+      var dark = root.classList.contains('dark');
+      var text = '表示: ' + (dark ? 'ダーク' : 'ライト');
+      var aria = '配色を切り替える（現在: ' + (dark ? 'ダーク' : 'ライト') + '）';
+      buttons.forEach(function (b) { b.textContent = text; b.setAttribute('aria-label', aria); });
+    }
+
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var dark = root.classList.toggle('dark');
+        try { localStorage.setItem('pixelog-theme', dark ? 'dark' : 'light'); } catch (e) {}
+        sync();
+      });
+    });
+    sync();
+  })();
+</script>
+</body>
+</html>

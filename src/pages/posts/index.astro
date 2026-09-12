@@ -1,0 +1,39 @@
+---
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import PageHeading from "../../components/PageHeading.astro";
+import PostList from "../../components/PostList.astro";
+import { getJstYear } from "../../utils/datetime";
+import { getPublishedPosts } from "../../utils/posts";
+
+const posts = await getPublishedPosts();
+
+// 年ごとにまとめて表示する。サイドバーの「年月」はここに飛ぶ
+const years = [...new Set(posts.map((post) => getJstYear(post.data.published_at)))].sort(
+  (a, b) => b - a,
+);
+
+const groups = years.map((year) => ({
+  year,
+  posts: posts.filter((post) => getJstYear(post.data.published_at) === year),
+}));
+---
+
+<SiteLayout documentTitle="アーカイブ" current="posts">
+  <PageHeading label="アーカイブ" title="すべての記録" count={posts.length} />
+
+  <div class="space-y-16">
+    {
+      groups.map((group) => (
+        <section>
+          <h2
+            id={String(group.year)}
+            class="mb-2 font-mono text-[0.8125rem] font-medium tracking-[0.1em] text-ink2"
+          >
+            {group.year}
+          </h2>
+          <PostList posts={group.posts} titleTag="h3" />
+        </section>
+      ))
+    }
+  </div>
+</SiteLayout>

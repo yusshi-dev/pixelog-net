@@ -1,0 +1,26 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import PostList from "../components/PostList.astro";
+import Pagination from "../components/Pagination.astro";
+import { POSTS_PER_PAGE } from "../consts";
+import { getPublishedPosts } from "../utils/posts";
+
+// ホーム。1ページ目が /、以降が /2/ /3/ … になる
+export async function getStaticPaths({ paginate }) {
+  const posts = await getPublishedPosts();
+  return paginate(posts, { pageSize: POSTS_PER_PAGE });
+}
+
+const { page } = Astro.props;
+---
+
+<SiteLayout isHome current="posts">
+  <PostList posts={page.data} />
+
+  <Pagination
+    currentPage={page.currentPage}
+    lastPage={page.lastPage}
+    urlPrev={page.url.prev}
+    urlNext={page.url.next}
+  />
+</SiteLayout>

@@ -1,0 +1,22 @@
+---
+import PostListItem from "./PostListItem.astro";
+import type { Post } from "../utils/posts";
+
+interface Props {
+  posts: Post[];
+  /** 記事タイトルの見出しレベル。年グループの下に置くときは h3 にする */
+  titleTag?: "h2" | "h3";
+}
+
+const { posts, titleTag = "h2" } = Astro.props;
+---
+
+<ol class="divide-y divide-line">
+  {
+    posts.map((post) => (
+      <li class="py-10 first:pt-0 last:pb-0">
+        <PostListItem post={post} titleTag={titleTag} />
+      </li>
+    ))
+  }
+</ol>

@@ -1,0 +1,14 @@
+---
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import PageHeading from "../../components/PageHeading.astro";
+import CategoryList from "../../components/CategoryList.astro";
+import { countByCategory, getPublishedPosts } from "../../utils/posts";
+
+const posts = await getPublishedPosts();
+const categories = countByCategory(posts);
+---
+
+<SiteLayout documentTitle="カテゴリー" current="categories">
+  <PageHeading label="カテゴリー" title="すべてのカテゴリー" count={categories.length} />
+  <CategoryList categories={categories} />
+</SiteLayout>

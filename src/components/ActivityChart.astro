@@ -1,0 +1,47 @@
+---
+import { formatYmd } from "../utils/datetime";
+import type { YearCount } from "../utils/posts";
+
+interface Props {
+  yearActivity: YearCount[];
+  totalPosts: number;
+  firstPostAt: Date;
+  lastPostAt: Date;
+}
+
+const { yearActivity, totalPosts, firstPostAt, lastPostAt } = Astro.props;
+
+const max = Math.max(...yearActivity.map((y) => y.count), 1);
+
+const barColor = (count: number) => {
+  if (count === 0) return "bg-barzero";
+  return count === max ? "bg-brand" : "bg-bar";
+};
+
+// 0件の年は細い線だけ残して、書かなかった年も見えるようにする
+const barHeight = (count: number) =>
+  count === 0 ? "3px" : `${Math.max(6, Math.round((count / max) * 100))}%`;
+
+const chartLabel = `年ごとの投稿数。${yearActivity
+  .map((y) => `${y.year}年${y.count}件`)
+  .join("、")}。合計${totalPosts}件。`;
+---
+
+<div class="flex h-10 items-end gap-[3px]" role="img" aria-label={chartLabel}>
+  {
+    yearActivity.map((year, index) => (
+      <span
+        class:list={["bar flex-1 rounded-[1px]", barColor(year.count)]}
+        style={{ "--i": index, height: barHeight(year.count) }}
+      />
+    ))
+  }
+</div>
+
+<div class="mt-2 flex gap-[3px] font-mono text-[0.625rem] text-ink3" aria-hidden="true">
+  {yearActivity.map((year) => <span class="flex-1 text-center">{String(year.year).slice(-2)}</span>)}
+</div>
+
+<p class="mt-3 font-mono text-[0.75rem] text-ink3">
+  {totalPosts}件 · {formatYmd(firstPostAt).slice(0, 7)} — {formatYmd(lastPostAt).slice(0, 7)}
+</p>

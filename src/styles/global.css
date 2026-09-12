@@ -1,62 +1,293 @@
+@import "tailwindcss" source(none);
+
+/* 手動ダークモード。html.dark のときだけ dark: が効く */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* 走査対象は src のみ（design-mockup や content を含めない） */
+@source "../";
+
+/* =========================================================
+   デザイントークン
+   ライト / ダークの切り替えは CSS 変数の差し替えだけで行う。
+   Tailwind のユーティリティは下の @theme inline で変数を参照するので、
+   dark: を各要素に書く必要はない。
+   ========================================================= */
 :root {
-    --bg:         #f7f5f2;
-    --bg-2:       #edeae4;
-    --bg-3:       #e2ddd6;
+  --canvas:   #f4f2ef;
+  --surface:  #ffffff;
+  --sunken:   #efece7;
+  --ink:      #1b1a17;
+  --ink2:     #4a463f;
+  --ink3:     #6e675d;
+  --brand:    #ff6e1e;   /* 塗り・印・グラフ用 */
+  --brandink: #c2400a;   /* 文字用（紙に対して 4.7:1） */
+  --bar:      #cfc5b8;
+  --barzero:  #e0d8cd;
+  --line:     rgba(27, 26, 23, 0.12);
+  --leader:   rgba(27, 26, 23, 0.28);
+  --code:     #1b1a17;
+  --codeink:  #e7e1d8;
+}
 
-    --ink:        #1c1a17;
-    --ink-mid:    #3a3530;
-    --ink-sub:    #5e574f;
-    --ink-mute:   #7a726a;
+.dark {
+  --canvas:   #141311;
+  --surface:  #1d1b18;
+  --sunken:   #262320;
+  --ink:      #ece7df;
+  --ink2:     #b6aea2;
+  --ink3:     #8d8578;
+  --brand:    #ff6e1e;
+  --brandink: #ff6e1e;
+  --bar:      #4a443c;
+  --barzero:  #2e2a25;
+  --line:     rgba(236, 231, 223, 0.16);
+  --leader:   rgba(236, 231, 223, 0.30);
+  --code:     #26231f;
+  --codeink:  #e7e1d8;
+}
 
-    --accent-alt: #3d6b40;
+@theme inline {
+  --color-canvas:   var(--canvas);
+  --color-surface:  var(--surface);
+  --color-sunken:   var(--sunken);
+  --color-ink:      var(--ink);
+  --color-ink2:     var(--ink2);
+  --color-ink3:     var(--ink3);
+  --color-brand:    var(--brand);
+  --color-brandink: var(--brandink);
+  --color-bar:      var(--bar);
+  --color-barzero:  var(--barzero);
+  --color-line:     var(--line);
 
-    --line:        rgba(28,26,23,0.14);
-    --line-strong: rgba(28,26,23,0.26);
+  --font-sans: "Zen Kaku Gothic New", system-ui, sans-serif;
+  --font-en:   "IBM Plex Sans", "Zen Kaku Gothic New", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-    --font-ja:   'Noto Serif JP', serif;
-    --font-en:   'Instrument Serif', serif;
-    --font-mono: 'Geist Mono', monospace;
+  --container-page: 66rem;
 
-    --max-w: 780px;
-    --pad:   clamp(1.25rem, 5vw, 2.5rem);
+  --radius-card: 12px;
 
-    --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
-  }
+  --shadow-popover: 0 12px 32px rgba(20, 18, 16, 0.16), 0 2px 8px rgba(20, 18, 16, 0.08);
+}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* =========================================================
+   ベース
+   ========================================================= */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* フォーカスは必ず見えるようにする */
+:focus-visible {
+  outline: 2px solid var(--brandink);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ヒーロー（暗い面）の上では白いリングに */
+.on-hero :focus-visible {
+  outline-color: #ffffff;
+}
+
+summary {
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ヒーローの高さ。
+   幅に対して連続的に縮むので、ブレークポイントのような段差が出ない。
+   広い画面 = 26.25rem(420px) / 狭い画面 = 18.75rem(300px。従来の最小値)。
+   ウィンドウが低いときは 44vh が上限になり、縦にも配慮する。 */
+.hero {
+  height: clamp(18.75rem, min(16vw + 12.5rem, 44vh), 26.25rem);
+}
+
+/* サイドバーの目次点線 */
+.leader {
+  border-bottom: 1px dotted var(--leader);
+}
+
+/* 記録の推移スパークライン */
+.bar {
+  transform-origin: bottom;
+  animation: grow 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation-delay: calc(var(--i) * 45ms);
+}
+
+@keyframes grow {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+/* =========================================================
+   記事本文
+   Markdown の生要素に対して当てるので、親に .prose を付ける。
+   ========================================================= */
+.prose p {
+  margin-bottom: 1.6em;
+  color: var(--ink2);
+}
+
+.prose h2 {
+  margin: 2.6em 0 0.8em;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.prose h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 2em 0 0.6em;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.prose h3::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--brand);
+}
+
+.prose a {
+  color: var(--brandink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.prose ul {
+  margin: 0 0 1.6em;
+  padding: 0;
+  list-style: none;
+}
+.prose ul > li {
+  position: relative;
+  margin-bottom: 0.5em;
+  padding-left: 1.3em;
+  color: var(--ink2);
+}
+.prose ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0.15em;
+  top: 0.75em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink3);
+}
+
+.prose ol {
+  margin: 0 0 1.6em 1.5em;
+}
+.prose ol > li {
+  margin-bottom: 0.5em;
+  color: var(--ink2);
+}
+.prose ol > li::marker {
+  color: var(--ink3);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+
+.prose pre {
+  margin: 1.6em 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--code);
+  color: var(--codeink);
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.75;
+  -webkit-overflow-scrolling: touch;
+}
+.prose pre code {
+  font-family: inherit;
+}
+
+.prose :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  padding: 0.12em 0.38em;
+  background: var(--sunken);
+  border-radius: 4px;
+  color: var(--ink);
+}
+
+.prose figure {
+  margin: 1.8em 0;
+}
+.prose img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+.prose figcaption {
+  margin-top: 0.7rem;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--ink3);
+}
+
+.prose blockquote {
+  margin: 1.8em 0;
+  padding: 0.2em 0 0.2em 1.25em;
+  border-left: 3px solid var(--leader);
+  color: var(--ink2);
+}
+
+.prose table {
+  width: 100%;
+  margin: 1.8em 0;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+.prose th,
+.prose td {
+  padding: 0.5em 0.75em;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+.prose th {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.prose hr {
+  margin: 2.6em 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+/* =========================================================
+   動きを減らす設定を尊重する
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
   html {
-    font-size: clamp(1rem, 0.945rem + 0.388vw, 1.2rem);
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
   }
-
-  body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: var(--font-ja);
-    line-height: 1.9;
-    min-height: 100vh;
+  .bar {
+    animation: none;
   }
-
-
-    /* ─── Shared typography ─── */
-  .section-label {
-    font-family: var(--font-mono);
-    font-size: 0.63rem; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--ink-mute);
-    margin-bottom: 1.5rem;
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
   }
-
-  .page-title {
-    font-family: var(--font-en);
-    font-size: clamp(1.8rem, 5vw, 2.4rem);
-    font-style: italic; font-weight: 400;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-    margin: 2.8rem 0 2rem;
-    line-height: 1.15;
-  }
-
-  hr.divider {
-    border: none; border-top: 1px solid var(--line);
-    margin: 3rem 0;
-  }
+}

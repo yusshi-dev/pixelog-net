@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Pixelog — 案4: 幾何学（2017年版のリバイバル）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@500;600;700&family=Newsreader:ital,wght@0,400;1,400&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    var saved = null;
+    try { saved = localStorage.getItem('pixelog-theme'); } catch (e) {}
+    var os = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    if ((saved || os) === 'dark') document.documentElement.classList.add('dark');
+  })();
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  /*
+    案4: 10年前（2017年）のデザインのリバイバル。
+    継承したもの — 左上に貼られた濃いカテゴリチップ / サムネイル＋日付＋太字タイトル＋「›」/
+    幾何学模様の帯 / サイドバーのイタリックセリフ見出し / 次ページのtealボタン / 濃いフッター
+    現代化したもの — 文字サイズと余白 / 細い枠線をやめて影へ / 帯はCSSで描き直し
+  */
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          canvas:  'var(--canvas)',
+          surface: 'var(--surface)',
+          sunken:  'var(--sunken)',
+          ink:     'var(--ink)',
+          ink2:    'var(--ink2)',
+          ink3:    'var(--ink3)',
+          chip:    'var(--chip)',
+          sea:     'var(--sea)',
+          seaink:  'var(--seaink)',
+          btn:     'var(--btn)',
+          footer:  'var(--footer)',
+        },
+        fontFamily: {
+          sans:   ['"Zen Kaku Gothic New"', 'system-ui', 'sans-serif'],
+          en:     ['"IBM Plex Sans"', '"Zen Kaku Gothic New"', 'system-ui', 'sans-serif'],
+          mono:   ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+          serif:  ['Newsreader', 'Georgia', 'serif'],
+        },
+        borderRadius: { panel: '14px' },
+        boxShadow: {
+          card: '0 1px 2px rgba(22,24,27,.04), 0 6px 20px rgba(22,24,27,.07)',
+          lift: '0 3px 8px rgba(22,24,27,.08), 0 16px 36px rgba(22,24,27,.12)',
+          pop:  '0 12px 32px rgba(22,24,27,.16), 0 2px 8px rgba(22,24,27,.08)',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  :root {
+    --canvas:   #f0efed;
+    --surface:  #ffffff;
+    --sunken:   #e7e5e1;
+    --ink:      #1e1f22;
+    --ink2:     #474b52;
+    --ink3:     #767b83;
+    --chip:     #3f4550;              /* カテゴリチップ */
+    --sea:      #0f9aa8;              /* 幾何学模様のteal（塗り専用） */
+    --seaink:   #0c7683;              /* 文字・リンク用（対紙 4.6:1） */
+    --btn:      #0c7683;              /* ボタン塗り（白文字で 5.3:1） */
+    --footer:   #2b2f33;
+    --cyan:     #17b8c9;
+    --lime:     #b7d400;
+    --motifbg:  #e7e5e1;
+    --bannerbg: #e9e7e3;
+  }
+  .dark {
+    --canvas:   #17181a;
+    --surface:  #212326;
+    --sunken:   #2a2d31;
+    --ink:      #ecedee;
+    --ink2:     #b4b8bd;
+    --ink3:     #8b9096;
+    --chip:     #3f4550;
+    --sea:      #17b8c9;
+    --seaink:   #4fd6e4;              /* ダークでは明るいteal（10:1） */
+    --btn:      #0c7683;
+    --footer:   #0f1113;
+    --cyan:     #17b8c9;
+    --lime:     #b7d400;
+    --motifbg:  #2c2f33;
+    --bannerbg: #1f2225;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { text-rendering: optimizeLegibility; }
+
+  summary { list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+
+  :focus-visible {
+    outline: 2px solid var(--seaink);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+
+<body class="bg-canvas font-sans text-[1.0625rem] leading-[1.9] text-ink antialiased">
+
+<a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:text-canvas">本文へスキップ</a>
+
+<!-- サムネイル用の幾何学モチーフ（元デザインは空の白枠だったので、その現代版） -->
+<svg width="0" height="0" class="absolute" aria-hidden="true" focusable="false">
+  <symbol id="motif" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="var(--motifbg)"/>
+    <polygon points="0,0 44,0 26,100 0,100"       fill="var(--sea)"  opacity="0.62"/>
+    <polygon points="44,0 72,0 54,100 26,100"     fill="var(--cyan)" opacity="0.55"/>
+    <polygon points="72,0 94,0 76,100 54,100"     fill="var(--lime)" opacity="0.55"/>
+  </symbol>
+</svg>
+
+<!-- ============================== ヘッダー ============================== -->
+<header class="pb-6 pt-7">
+  <div class="mx-auto flex max-w-4xl items-end justify-between gap-6 px-6">
+    <a href="#" class="block">
+      <span class="font-en text-[1.5rem] font-bold uppercase tracking-[0.18em] text-ink">Pixelog</span>
+      <span class="mt-0.5 block text-[0.75rem] text-ink3">技術のメモと日記</span>
+    </a>
+
+    <nav class="hidden items-center gap-1 sm:flex" aria-label="メイン">
+      <a href="#" aria-current="page" class="rounded-lg px-3 py-2 text-[0.9375rem] font-medium text-ink hover:bg-surface">記事</a>
+      <a href="#" class="rounded-lg px-3 py-2 text-[0.9375rem] text-ink2 hover:bg-surface hover:text-ink">カテゴリ</a>
+      <a href="#" class="rounded-lg px-3 py-2 text-[0.9375rem] text-ink2 hover:bg-surface hover:text-ink">タグ</a>
+      <a href="#" class="rounded-lg px-3 py-2 text-[0.9375rem] text-ink2 hover:bg-surface hover:text-ink">このサイト</a>
+    </nav>
+
+    <details class="relative sm:hidden">
+      <summary class="grid h-11 w-11 cursor-pointer place-items-center rounded-lg text-ink2 hover:bg-surface hover:text-ink">
+        <span class="sr-only">メニュー</span>
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </summary>
+      <nav class="absolute right-0 top-[calc(100%+0.4rem)] grid min-w-[12rem] gap-1 rounded-panel bg-surface p-2 shadow-pop" aria-label="メイン（狭い画面）">
+        <a href="#" aria-current="page" class="rounded px-3 py-2.5 text-sm hover:bg-canvas">記事</a>
+        <a href="#" class="rounded px-3 py-2.5 text-sm text-ink2 hover:bg-canvas hover:text-ink">カテゴリ</a>
+        <a href="#" class="rounded px-3 py-2.5 text-sm text-ink2 hover:bg-canvas hover:text-ink">タグ</a>
+        <a href="#" class="rounded px-3 py-2.5 text-sm text-ink2 hover:bg-canvas hover:text-ink">このサイト</a>
+      </nav>
+    </details>
+  </div>
+</header>
+
+<!-- ============================== 幾何学模様の帯（元デザインの主役） ============================== -->
+<div class="h-20 w-full sm:h-32" aria-hidden="true">
+  <svg viewBox="0 0 1200 140" preserveAspectRatio="none" class="h-full w-full">
+    <rect width="1200" height="140" fill="var(--bannerbg)"/>
+    <polygon points="0,0 430,0 340,140 0,140"     fill="var(--sea)"/>
+    <polygon points="430,0 700,0 610,140 340,140" fill="var(--cyan)"/>
+    <polygon points="700,0 880,0 790,140 610,140" fill="var(--lime)"/>
+    <polygon points="880,0 960,0 870,140 790,140" fill="var(--chip)"/>
+  </svg>
+</div>
+
+<!-- ============================== 本文 ============================== -->
+<div class="mx-auto max-w-4xl px-6 py-10 lg:py-14">
+  <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-8">
+
+    <!-- ---------- 左：記録の一覧 ---------- -->
+    <main id="main">
+      <ol class="space-y-4">
+
+        <li>
+          <article class="group relative rounded-panel bg-surface p-5 shadow-card transition duration-200 hover:shadow-lift">
+            <span class="-ml-5 -mt-5 mb-4 inline-block rounded-tl-[14px] rounded-br-lg bg-chip px-3.5 py-1.5 text-[0.6875rem] font-medium tracking-wide text-white">雑記</span>
+            <a href="#" class="flex items-start gap-5">
+              <span class="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-sunken sm:h-28 sm:w-28">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="h-full w-full"><use href="#motif"/></svg>
+              </span>
+              <span class="min-w-0 flex-1">
+                <time datetime="2026-07-07" class="font-mono text-[0.8125rem] text-ink3">2026.07.07</time>
+                <span class="mt-1.5 block text-[1.0625rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">足の指を骨折した</span>
+              </span>
+              <span class="mt-1 self-center text-[1.5rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </article>
+        </li>
+
+        <li>
+          <article class="group relative rounded-panel bg-surface p-5 shadow-card transition duration-200 hover:shadow-lift">
+            <span class="-ml-5 -mt-5 mb-4 inline-block rounded-tl-[14px] rounded-br-lg bg-chip px-3.5 py-1.5 text-[0.6875rem] font-medium tracking-wide text-white">雑記</span>
+            <a href="#" class="flex items-start gap-5">
+              <span class="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-sunken sm:h-28 sm:w-28">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="h-full w-full"><use href="#motif"/></svg>
+              </span>
+              <span class="min-w-0 flex-1">
+                <time datetime="2026-07-05" class="font-mono text-[0.8125rem] text-ink3">2026.07.05</time>
+                <span class="mt-1.5 block text-[1.0625rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">ブログをAstroでリニューアル</span>
+              </span>
+              <span class="mt-1 self-center text-[1.5rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </article>
+        </li>
+
+        <li>
+          <article class="group relative rounded-panel bg-surface p-5 shadow-card transition duration-200 hover:shadow-lift">
+            <span class="-ml-5 -mt-5 mb-4 inline-block rounded-tl-[14px] rounded-br-lg bg-chip px-3.5 py-1.5 text-[0.6875rem] font-medium tracking-wide text-white">技術メモ</span>
+            <a href="#" class="flex items-start gap-5">
+              <span class="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-sunken sm:h-28 sm:w-28">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="h-full w-full"><use href="#motif"/></svg>
+              </span>
+              <span class="min-w-0 flex-1">
+                <time datetime="2024-12-31" class="font-mono text-[0.8125rem] text-ink3">2024.12.31</time>
+                <span class="mt-1.5 block text-[1.0625rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">HexoのテーマでTailwind CSSを利用する</span>
+              </span>
+              <span class="mt-1 self-center text-[1.5rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </article>
+        </li>
+
+        <li>
+          <article class="group relative rounded-panel bg-surface p-5 shadow-card transition duration-200 hover:shadow-lift">
+            <span class="-ml-5 -mt-5 mb-4 inline-block rounded-tl-[14px] rounded-br-lg bg-chip px-3.5 py-1.5 text-[0.6875rem] font-medium tracking-wide text-white">技術メモ</span>
+            <a href="#" class="flex items-start gap-5">
+              <span class="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-sunken sm:h-28 sm:w-28">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="h-full w-full"><use href="#motif"/></svg>
+              </span>
+              <span class="min-w-0 flex-1">
+                <time datetime="2022-11-21" class="font-mono text-[0.8125rem] text-ink3">2022.11.21</time>
+                <span class="mt-1.5 block text-[1.0625rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">AutoHotkeyのGUIでボタンを隠す</span>
+              </span>
+              <span class="mt-1 self-center text-[1.5rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </article>
+        </li>
+
+        <li>
+          <article class="group relative rounded-panel bg-surface p-5 shadow-card transition duration-200 hover:shadow-lift">
+            <span class="-ml-5 -mt-5 mb-4 inline-block rounded-tl-[14px] rounded-br-lg bg-chip px-3.5 py-1.5 text-[0.6875rem] font-medium tracking-wide text-white">雑記</span>
+            <a href="#" class="flex items-start gap-5">
+              <span class="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-sunken sm:h-28 sm:w-28">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="h-full w-full"><use href="#motif"/></svg>
+              </span>
+              <span class="min-w-0 flex-1">
+                <time datetime="2022-07-22" class="font-mono text-[0.8125rem] text-ink3">2022.07.22</time>
+                <span class="mt-1.5 block text-[1.0625rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">ブログを書きたい欲</span>
+              </span>
+              <span class="mt-1 self-center text-[1.5rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </article>
+        </li>
+
+        <li>
+          <article class="group relative rounded-panel bg-surface p-5 shadow-card transition duration-200 hover:shadow-lift">
+            <span class="-ml-5 -mt-5 mb-4 inline-block rounded-tl-[14px] rounded-br-lg bg-chip px-3.5 py-1.5 text-[0.6875rem] font-medium tracking-wide text-white">技術メモ</span>
+            <a href="#" class="flex items-start gap-5">
+              <span class="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-sunken sm:h-28 sm:w-28">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="h-full w-full"><use href="#motif"/></svg>
+              </span>
+              <span class="min-w-0 flex-1">
+                <time datetime="2022-07-20" class="font-mono text-[0.8125rem] text-ink3">2022.07.20</time>
+                <span class="mt-1.5 block text-[1.0625rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">AutoHotkeyでEclipseの左ペインにフォーカス</span>
+              </span>
+              <span class="mt-1 self-center text-[1.5rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </article>
+        </li>
+
+        <li>
+          <article class="group relative rounded-panel bg-surface p-5 shadow-card transition duration-200 hover:shadow-lift">
+            <span class="-ml-5 -mt-5 mb-4 inline-block rounded-tl-[14px] rounded-br-lg bg-chip px-3.5 py-1.5 text-[0.6875rem] font-medium tracking-wide text-white">技術メモ</span>
+            <a href="#" class="flex items-start gap-5">
+              <span class="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-sunken sm:h-28 sm:w-28">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="h-full w-full"><use href="#motif"/></svg>
+              </span>
+              <span class="min-w-0 flex-1">
+                <time datetime="2022-07-19" class="font-mono text-[0.8125rem] text-ink3">2022.07.19</time>
+                <span class="mt-1.5 block text-[1.0625rem] font-bold leading-snug tracking-[-0.01em] text-ink transition group-hover:text-seaink">GsonでjsonのタイムスタンプをDate型に変換</span>
+              </span>
+              <span class="mt-1 self-center text-[1.5rem] leading-none text-ink3 transition group-hover:translate-x-0.5 group-hover:text-seaink" aria-hidden="true">›</span>
+            </a>
+          </article>
+        </li>
+
+      </ol>
+
+      <!-- 次ページ（元デザインのtealボタン） -->
+      <div class="mt-8 flex justify-center">
+        <a href="#" class="inline-flex items-center gap-2 rounded-lg bg-btn px-6 py-3 text-[0.9375rem] font-medium text-white shadow-card transition hover:brightness-110">
+          次ページ
+          <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </main>
+
+    <!-- ---------- 右：サイドバー ---------- -->
+    <aside class="space-y-5" aria-label="サイドバー">
+
+      <!-- Activity -->
+      <section class="rounded-panel bg-surface p-5 shadow-card">
+        <h2 class="font-serif text-[1.125rem] italic leading-none text-ink">Activity</h2>
+        <div class="mt-4 flex h-9 items-end gap-[3px]" role="img"
+          aria-label="年ごとの投稿数。2017年1件、2018年0件、2019年9件、2020年56件、2021年4件、2022年14件、2023年1件、2024年1件、2025年0件、2026年2件。合計88件。">
+          <span class="flex-1 rounded-[1px] bg-sunken" style="height:6%"></span>
+          <span class="flex-1 rounded-[1px] bg-sunken" style="height:3px"></span>
+          <span class="flex-1 rounded-[1px] bg-sea" style="height:16%"></span>
+          <span class="flex-1 rounded-[1px] bg-sea" style="height:100%"></span>
+          <span class="flex-1 rounded-[1px] bg-sea" style="height:8%"></span>
+          <span class="flex-1 rounded-[1px] bg-sea" style="height:25%"></span>
+          <span class="flex-1 rounded-[1px] bg-sea" style="height:6%"></span>
+          <span class="flex-1 rounded-[1px] bg-sea" style="height:6%"></span>
+          <span class="flex-1 rounded-[1px] bg-sunken" style="height:3px"></span>
+          <span class="flex-1 rounded-[1px] bg-sea" style="height:7%"></span>
+        </div>
+        <div class="mt-2 flex gap-[3px] font-mono text-[0.5625rem] text-ink3" aria-hidden="true">
+          <span class="flex-1 text-center">17</span><span class="flex-1 text-center">18</span>
+          <span class="flex-1 text-center">19</span><span class="flex-1 text-center">20</span>
+          <span class="flex-1 text-center">21</span><span class="flex-1 text-center">22</span>
+          <span class="flex-1 text-center">23</span><span class="flex-1 text-center">24</span>
+          <span class="flex-1 text-center">25</span><span class="flex-1 text-center">26</span>
+        </div>
+        <p class="mt-3 font-mono text-[0.6875rem] text-ink3">88件 · 2017.03 — 2026.07</p>
+      </section>
+
+      <!-- 元デザインの「Jupiter」枠にあたる、模様つきの小パネル -->
+      <section class="overflow-hidden rounded-panel bg-surface shadow-card">
+        <div class="h-16" aria-hidden="true">
+          <svg viewBox="0 0 300 70" preserveAspectRatio="none" class="h-full w-full">
+            <rect width="300" height="70" fill="var(--bannerbg)"/>
+            <polygon points="0,0 150,0 110,70 0,70"  fill="var(--sea)"/>
+            <polygon points="150,0 250,0 210,70 110,70" fill="var(--cyan)"/>
+            <polygon points="250,0 300,0 260,70 210,70" fill="var(--lime)"/>
+          </svg>
+        </div>
+        <div class="p-5">
+          <p class="font-serif text-[1rem] italic text-ink">Pixelog</p>
+          <p class="mt-2 text-[0.8125rem] leading-[1.75] text-ink3">
+            2017年3月から、細切れに88件。まとまらないまま、のんびり続いています。
+          </p>
+        </div>
+      </section>
+
+      <!-- Category -->
+      <section class="rounded-panel bg-surface p-5 shadow-card">
+        <h2 class="font-serif text-[1.125rem] italic leading-none text-ink">Category</h2>
+        <nav class="mt-3" aria-label="カテゴリー">
+          <a href="#" class="flex items-baseline gap-2 py-1.5 text-[0.9375rem] text-ink2 hover:text-seaink">
+            <span>技術メモ</span>
+            <span class="flex-1" aria-hidden="true"></span>
+            <span class="font-mono text-[0.8125rem] text-ink3">67</span>
+          </a>
+          <a href="#" class="flex items-baseline gap-2 py-1.5 text-[0.9375rem] text-ink2 hover:text-seaink">
+            <span>雑記</span>
+            <span class="flex-1" aria-hidden="true"></span>
+            <span class="font-mono text-[0.8125rem] text-ink3">21</span>
+          </a>
+        </nav>
+      </section>
+
+      <!-- Tags -->
+      <section class="rounded-panel bg-surface p-5 shadow-card">
+        <h2 class="font-serif text-[1.125rem] italic leading-none text-ink">Tags</h2>
+        <div class="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
+          <a href="#" class="text-[0.9375rem] text-ink hover:text-seaink">Web制作<span class="ml-1 font-mono text-[0.6875rem] text-ink3">25</span></a>
+          <a href="#" class="text-[0.9375rem] text-ink hover:text-seaink">CSS<span class="ml-1 font-mono text-[0.6875rem] text-ink3">23</span></a>
+          <a href="#" class="text-[0.9375rem] text-ink hover:text-seaink">HTML<span class="ml-1 font-mono text-[0.6875rem] text-ink3">21</span></a>
+          <a href="#" class="text-[0.875rem] text-ink2 hover:text-seaink">Hexo<span class="ml-1 font-mono text-[0.6875rem] text-ink3">19</span></a>
+          <a href="#" class="text-[0.875rem] text-ink2 hover:text-seaink">JavaScript<span class="ml-1 font-mono text-[0.6875rem] text-ink3">13</span></a>
+          <a href="#" class="text-[0.875rem] text-ink2 hover:text-seaink">AutoHotkey<span class="ml-1 font-mono text-[0.6875rem] text-ink3">10</span></a>
+          <a href="#" class="text-[0.875rem] text-ink2 hover:text-seaink">EJS<span class="ml-1 font-mono text-[0.6875rem] text-ink3">10</span></a>
+          <a href="#" class="text-[0.8125rem] text-ink3 hover:text-seaink">Netlify<span class="ml-1 font-mono text-[0.6875rem] text-ink3">4</span></a>
+          <a href="#" class="text-[0.8125rem] text-ink3 hover:text-seaink">Eclipse<span class="ml-1 font-mono text-[0.6875rem] text-ink3">2</span></a>
+          <a href="#" class="text-[0.8125rem] text-ink3 hover:text-seaink">Node.js<span class="ml-1 font-mono text-[0.6875rem] text-ink3">1</span></a>
+        </div>
+      </section>
+
+      <!-- Recent Entries -->
+      <section class="rounded-panel bg-surface p-5 shadow-card">
+        <h2 class="font-serif text-[1.125rem] italic leading-none text-ink">Recent Entries</h2>
+        <nav class="mt-3" aria-label="最近の投稿">
+          <ul class="space-y-2.5 text-[0.875rem] leading-[1.7] text-ink2">
+            <li><a href="#" class="hover:text-seaink">足の指を骨折した</a></li>
+            <li><a href="#" class="hover:text-seaink">ブログをAstroでリニューアル</a></li>
+            <li><a href="#" class="hover:text-seaink">HexoのテーマでTailwind CSSを利用する</a></li>
+            <li><a href="#" class="hover:text-seaink">AutoHotkeyでキーラベルからキーの名前に変換</a></li>
+            <li><a href="#" class="hover:text-seaink">AutoHotkeyのGUIでボタンを隠す</a></li>
+          </ul>
+        </nav>
+      </section>
+
+      <!-- Search -->
+      <section class="rounded-panel bg-surface p-5 shadow-card">
+        <h2 class="font-serif text-[1.125rem] italic leading-none text-ink">Search</h2>
+        <form action="https://duckduckgo.com/" method="get" target="_blank" rel="noopener" class="relative mt-3">
+          <label for="q2" class="sr-only">キーワードで検索</label>
+          <input id="q2" name="q" type="search" placeholder="キーワード" autocomplete="off"
+                 class="w-full rounded-lg bg-canvas py-2.5 pl-3.5 pr-12 text-[1rem] text-ink placeholder:text-ink3">
+          <input type="hidden" name="sites" value="pixelog.net">
+          <button type="submit" class="absolute right-0.5 top-0.5 grid h-10 w-10 place-items-center rounded-lg text-ink3 hover:bg-sunken hover:text-ink">
+            <span class="sr-only">検索する</span>
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+          </button>
+        </form>
+      </section>
+
+      <!-- 配色切替 -->
+      <button id="theme-toggle" type="button"
+              class="w-full rounded-panel bg-surface px-5 py-3 text-left text-[0.875rem] text-ink2 shadow-card transition hover:text-ink"></button>
+
+    </aside>
+  </div>
+</div>
+
+<!-- ============================== フッター ============================== -->
+<footer class="bg-footer py-10 text-center">
+  <nav class="flex justify-center gap-5 text-[0.8125rem] text-white/75" aria-label="フッター">
+    <a href="#" class="hover:text-white">ホーム</a>
+    <a href="#" class="hover:text-white">このサイトについて</a>
+    <a href="#" class="hover:text-white">RSS</a>
+  </nav>
+  <p class="mt-4 font-mono text-[0.75rem] text-white/60">© PIXELOG 2026</p>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById('theme-toggle');
+
+    function label() {
+      var dark = root.classList.contains('dark');
+      btn.textContent = '表示: ' + (dark ? 'ダーク' : 'ライト');
+      btn.setAttribute('aria-label', '配色を切り替える（現在: ' + (dark ? 'ダーク' : 'ライト') + '）');
+    }
+    btn.addEventListener('click', function () {
+      var dark = root.classList.toggle('dark');
+      try { localStorage.setItem('pixelog-theme', dark ? 'dark' : 'light'); } catch (e) {}
+      label();
+    });
+    label();
+  })();
+</script>
+</body>
+</html>

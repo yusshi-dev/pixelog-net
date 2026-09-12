@@ -1,0 +1,27 @@
+---
+interface Props {
+  /** 「カテゴリー」「タグ」など、何で絞り込んでいるかの種別 */
+  label: string;
+  title: string;
+  count?: number;
+}
+
+const { label, title, count } = Astro.props;
+---
+
+<header class="mb-9">
+  <p class="font-mono text-[0.8125rem] text-ink3">
+    {label}
+    {
+      count !== undefined && (
+        <>
+          <span aria-hidden="true"> · </span>
+          {count}件
+        </>
+      )
+    }
+  </p>
+  <h1 class="mt-2 text-[1.5rem] font-bold leading-snug tracking-[-0.015em] text-ink sm:text-[1.75rem]">
+    {title}
+  </h1>
+</header>
