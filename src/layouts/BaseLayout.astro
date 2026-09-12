@@ -2,7 +2,13 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
-const { pageTitle } = Astro.props;
+import { formatDocumentTitle } from '../utils/title';
+
+interface Props {
+  /** ページ固有のタイトル。省略するとサイト名のみになる（ホーム用） */
+  documentTitle?: string;
+}
+const { documentTitle } = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="ja">
@@ -10,7 +16,7 @@ const { pageTitle } = Astro.props;
 <meta charset="utf-8">
 <meta name="generator" content={Astro.generator} />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{pageTitle}</title>
+<title>{formatDocumentTitle(documentTitle)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

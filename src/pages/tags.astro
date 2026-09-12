@@ -1,16 +1,15 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { formatDateYear } from '../utils/datetime';
 import { getPostSlug } from '../utils/slug';
+import { getPublishedPosts, getTags } from '../utils/posts';
 
-const allPosts = await getCollection("blog");
-const posts = allPosts.filter(post => !post.data.draft);
-const tags = [...new Set(posts.map((post: any) => post.data.tags).flat())];
+const posts = await getPublishedPosts();
+const tags = getTags(posts);
 const pageTitle = "Tags";
 ---
 
-<BaseLayout pageTitle={pageTitle}>
+<BaseLayout documentTitle="タグ">
   <p class="page-title">{pageTitle}</p>
 
   <div class="tags-meta">
@@ -22,7 +21,7 @@ const pageTitle = "Tags";
   <div class="tag-cloud" id="tag-cloud">
     {
       tags.map((tag) => {
-        const count = posts.filter((post: any) => post.data.tags?.includes(tag)).length;
+        const count = posts.filter((post) => post.data.tags?.includes(tag)).length;
         const weight = Math.min(Math.max(count / 5, 0.5), 1.5);
         return (
           <a
@@ -44,7 +43,7 @@ const pageTitle = "Tags";
 
     {
       tags.map((tag) => {
-        const filteredPosts = posts.filter((post: any) => post.data.tags?.includes(tag));
+        const filteredPosts = posts.filter((post) => post.data.tags?.includes(tag));
         return (
           <div class="tag-group" id={`${tag}`}>
             <div class="tag-group-heading">
@@ -52,7 +51,7 @@ const pageTitle = "Tags";
               <span class="tag-group-count">{filteredPosts.length} articles</span>
             </div>
             {
-              filteredPosts.map((post: any) => (
+              filteredPosts.map((post) => (
                 <a class="tag-article-row" href={`/posts/${getPostSlug(post)}/`}>
                   <div>
                     <div class="tag-article-title">{post.data.title}</div>

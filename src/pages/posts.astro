@@ -1,22 +1,18 @@
 ---
-import { getCollection } from "astro:content";
 import '../styles/global.css';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { formatDate, formatISODatetime, getJstYear } from '../utils/datetime';
 import { getPostSlug } from '../utils/slug';
+import { getPublishedPosts, getYears } from '../utils/posts';
 
-const allPosts =  await getCollection("blog");
-const posts =  allPosts.filter(post => !post.data.draft);
-
-const years = Array.from(
-  new Set(posts.map((post) => getJstYear(post.data.published_at)))
-).sort((a, b) => b - a);
+const posts = await getPublishedPosts();
+const years = getYears(posts);
 
 const pageTitle = "Posts";
 
 ---
 
-<BaseLayout pageTitle={pageTitle}>
+<BaseLayout documentTitle="アーカイブ">
     <p class="page-title">{ pageTitle }</p>
 
     <div class="filter-bar">
@@ -45,7 +41,7 @@ const pageTitle = "Posts";
             <div class="year-section" data-year={year}>
               <div class="year-heading"><span>{year}</span></div>
               
-              {postsInYear.map((post: any) => (
+              {postsInYear.map((post) => (
                 <a class="article-row" data-cat={post.data.category} href={`/posts/${getPostSlug(post)}/`}>
                   <div>
                     <div class="article-title">{post.data.title}</div>

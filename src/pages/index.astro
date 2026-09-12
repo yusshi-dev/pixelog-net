@@ -1,21 +1,17 @@
 ---
-import { getCollection } from "astro:content";
 import { formatDateYear, formatISODatetime } from '../utils/datetime';
 import { getPostSlug } from '../utils/slug';
+import { getPublishedPosts } from '../utils/posts';
+import { SITE, RECENT_POSTS_COUNT } from '../consts';
 import '../styles/global.css';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const pageTitle = "Pixelog";
-const allPosts =  await getCollection("blog");
-const posts = allPosts
-                .filter(post => !post.data.draft)
-                .sort((a, b) => b.data.published_at.getTime() - a.data.published_at.getTime())
-                .slice(0, 5);
+const posts = (await getPublishedPosts()).slice(0, RECENT_POSTS_COUNT);
 ---
-<BaseLayout pageTitle={pageTitle}>
+<BaseLayout>
   <div class="hero" id="top">
-    <div class="hero-headline">Pixelog</div>
-    <p class="hero-sub">技術に関するメモと日記</p>
+    <div class="hero-headline">{SITE.title}</div>
+    <p class="hero-sub">{SITE.description}</p>
   </div>
   
 
