@@ -1,0 +1,96 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+
+site_url: https://pixelog.net
+app_title: pixelog.net
+
+backend:
+  name: github
+  repo: yusshi-dev/pixelog-net-content
+  branch: main
+
+# folder は backend.repo（pixelog-net-content）のルートからの相対パス
+# 画像は各記事フォルダ内（index.md と同階層）に置く構成のため、グローバルは空にする
+media_folder: ''
+public_folder: ''
+
+slug:
+  encoding: unicode
+  clean_accents: true
+  timezone: local
+
+collections:
+  - name: posts
+    label: 記事
+    label_singular: 記事
+    folder: posts
+    create: true
+    format: yaml-frontmatter
+    extension: md
+
+    # media_folder/public_folder を空にすることで、記事内に挿入した画像が
+    # index.md と同じフォルダ（posts/<slug>/）に保存される
+    path: '{{slug}}/index'
+    media_folder: ''
+    public_folder: ''
+
+    # フォルダ名 = yyyy-mm-dd-<編集可能なslug>
+    # {{fields._slug}} を指定すると、作成時にSlugフィールドが表示され手動で変更できる
+    slug: "{{published_at | date('YYYY-MM-DD')}}-{{fields._slug}}"
+
+    # 一覧は公開日時の降順（新しい記事が上）
+    sortable_fields:
+      fields: [published_at, title]
+      default: { field: published_at, direction: descending }
+
+    # 下書き/公開済みで絞り込み
+    # 注意: draft を持たない既存記事は「公開済み」に出ない（CMSで保存すると付与される）
+    view_filters:
+      - { label: 下書き, field: draft, pattern: 'true' }
+      - { label: 公開済み, field: draft, pattern: 'false' }
+
+    # カテゴリ・年でグループ化
+    view_groups:
+      - { label: カテゴリ, field: category }
+      - { label: 年, field: published_at, pattern: '\d{4}' }
+
+    fields:
+      - label: タイトル
+        name: title
+        widget: string
+
+      # format を指定しない場合、Sveltia は ISO 8601（例: 2026-09-12T13:35:00）で保存する。
+      # これは Obsidian の「Date & time」プロパティの正規形式と一致する。
+      # タイムゾーンオフセットは付けない（Obsidian が offset を扱えないため）。
+      - label: 公開日時
+        name: published_at
+        widget: datetime
+        input_timezone: local
+        default: '{{now}}'
+
+      # 決め打ちの選択肢。カテゴリを増やすときは options に追記する。
+      # dropdown_threshold を 1 にすると選択肢が2つでもドロップダウンになる
+      # （既定値の 5 だとラジオボタン表示）
+      - label: カテゴリ
+        name: category
+        widget: select
+        options:
+          - 技術メモ
+          - 雑記
+        dropdown_threshold: 1
+        required: true
+
+      - label: タグ
+        name: tags
+        widget: list
+        default: []
+
+      - label: 下書き
+        name: draft
+        widget: boolean
+        default: false
+
+      - label: 本文
+        name: body
+        widget: richtext
+
+    summary: "{{title}} ({{published_at | date('YYYY-MM-DD')}})"

@@ -2,14 +2,14 @@
 import { getCollection } from "astro:content";
 import '../styles/global.css';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { formatDate, formatISODatetime } from '../utils/datetime';
+import { formatDate, formatISODatetime, getJstYear } from '../utils/datetime';
 import { getPostSlug } from '../utils/slug';
 
 const allPosts =  await getCollection("blog");
 const posts =  allPosts.filter(post => !post.data.draft);
 
 const years = Array.from(
-  new Set(posts.map((post) => post.data.published_at.getFullYear()))
+  new Set(posts.map((post) => getJstYear(post.data.published_at)))
 ).sort((a, b) => b - a);
 
 const pageTitle = "Posts";
@@ -35,7 +35,7 @@ const pageTitle = "Posts";
         years.map((year) => {
           // 2. その年度に該当する記事だけをフィルターし、日付の新しい順にソート
           const postsInYear = posts
-            .filter((post) => post.data.published_at.getFullYear() === year)
+            .filter((post) => getJstYear(post.data.published_at) === year)
             .sort((a, b) => b.data.published_at.getTime() - a.data.published_at.getTime());
 
           // 万が一、該当年度の記事がない場合はセクションを出力しない
