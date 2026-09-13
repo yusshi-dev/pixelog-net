@@ -13,6 +13,22 @@ backend:
 media_folder: ''
 public_folder: ''
 
+# アップロード時にブラウザ内で画像を最適化してから保存する。
+# 参照は自動で .webp になり、拡張子の書き換えは不要。小さい画像は拡大されない。
+# EXIF（GPS 等）は削除される。
+media_libraries:
+  all:
+    transformations:
+      raster_image:
+        format: webp # 変換できる新形式は webp のみ
+        quality: 85
+        width: 1280 # 長辺の上限（既定は元サイズ）
+        height: 1280
+      svg:
+        optimize: true
+    # 元ファイルに対して判定される場合に備え、上限は大きめにする（既定は無制限）
+    max_file_size: 20971520 # 20MB
+
 slug:
   encoding: unicode
   clean_accents: true
