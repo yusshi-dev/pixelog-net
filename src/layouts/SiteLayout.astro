@@ -9,19 +9,28 @@ import { getSiteSummary } from "../utils/site";
 interface Props {
   documentTitle?: string;
   description?: string;
+  /** OGP 画像（絶対URL）。省略すると汎用画像になる */
+  ogImage?: string;
+  /** og:type */
+  ogType?: "website" | "article";
   /** グローバルナビで現在地として扱う項目 */
   current?: NavKey;
   /** ホーム（ヒーローのワードマークを h1 にする） */
   isHome?: boolean;
 }
 
-const { documentTitle, description, current, isHome = false } = Astro.props;
+const { documentTitle, description, ogImage, ogType, current, isHome = false } = Astro.props;
 
 // サイドバーの集計は全ページ共通なので、ここで1回だけ組み立てて配る
 const summary = await getSiteSummary();
 ---
 
-<BaseLayout documentTitle={documentTitle} description={description}>
+<BaseLayout
+  documentTitle={documentTitle}
+  description={description}
+  ogImage={ogImage}
+  ogType={ogType}
+>
   <a
     href="#main"
     class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-ink focus:px-4 focus:py-1 focus:text-s3 focus:text-canvas"

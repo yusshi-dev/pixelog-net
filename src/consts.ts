@@ -3,6 +3,8 @@ export const SITE = {
   description: "技術に関するメモと日記",
   url: "https://pixelog.net",
   author: "yusshi",
+  /** 記事に画像が無いときの OGP 画像（public 配下のパス） */
+  ogImage: "/pixelog.png",
 } as const;
 
 /** グローバルナビ。key は各ページの current と対応する */

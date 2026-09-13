@@ -4,6 +4,7 @@ import PostMeta from "../components/PostMeta.astro";
 import PostPager from "../components/PostPager.astro";
 import TagLinks from "../components/TagLinks.astro";
 import { getExcerpt } from "../utils/excerpt";
+import { getOgImage } from "../utils/ogp";
 import type { Post } from "../utils/posts";
 
 interface Props {
@@ -14,9 +15,16 @@ interface Props {
 
 const { post, older, newer } = Astro.props;
 const description = getExcerpt(post, 120);
+const ogImage = await getOgImage(post);
 ---
 
-<SiteLayout documentTitle={post.data.title} description={description} current="posts">
+<SiteLayout
+  documentTitle={post.data.title}
+  description={description}
+  ogImage={ogImage}
+  ogType="article"
+  current="posts"
+>
   <article>
     <PostMeta publishedAt={post.data.published_at} category={post.data.category} />
 

@@ -8,9 +8,21 @@ interface Props {
   documentTitle?: string;
   /** meta description */
   description?: string;
+  /** OGP 画像（絶対URL）。省略すると汎用画像（SITE.ogImage）になる */
+  ogImage?: string;
+  /** og:type */
+  ogType?: "website" | "article";
 }
 
-const { documentTitle, description = SITE.description } = Astro.props;
+const {
+  documentTitle,
+  description = SITE.description,
+  ogImage = new URL(SITE.ogImage, SITE.url).href,
+  ogType = "website",
+} = Astro.props;
+
+const documentTitleText = formatDocumentTitle(documentTitle);
+const canonicalUrl = new URL(Astro.url.pathname, SITE.url).href;
 ---
 
 <!doctype html>
@@ -20,8 +32,21 @@ const { documentTitle, description = SITE.description } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <meta name="generator" content={Astro.generator} />
-    <title>{formatDocumentTitle(documentTitle)}</title>
+    <title>{documentTitleText}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={documentTitleText} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content={SITE.title} />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={documentTitleText} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
