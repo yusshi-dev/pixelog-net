@@ -27,6 +27,9 @@
   --leader:   rgba(27, 26, 23, 0.28);
   --code:     #1b1a17;
   --codeink:  #e7e1d8;
+  --note:     #5f7d8c;
+  --caution:  #b07d1f;
+  --warning:  #b5524a;
 }
 
 .dark {
@@ -44,6 +47,9 @@
   --leader:   rgba(236, 231, 223, 0.30);
   --code:     #26231f;
   --codeink:  #e7e1d8;
+  --note:     #8fb0c0;
+  --caution:  #d6a44a;
+  --warning:  #d98b83;
 }
 
 @theme inline {
@@ -297,6 +303,29 @@ summary::-webkit-details-marker {
 }
 .prose blockquote > :last-child {
   margin-bottom: 0;
+}
+
+.prose .alert {
+  --alert: var(--note);
+  margin: 1.8em 0;
+  padding: 1em 1.25em;
+  border-left: 0.4em solid var(--alert);
+  background: var(--sunken);
+  background: color-mix(in oklab, var(--alert) 10%, var(--canvas));
+  color: color-mix(in oklab, var(--alert) 40%, var(--ink));
+  font-size: var(--text-s1);
+}
+.prose .alert :is(p, li) {
+  color: inherit;
+}
+.prose .alert > :last-child {
+  margin-bottom: 0;
+}
+.prose .alert.caution {
+  --alert: var(--caution);
+}
+.prose .alert.warning {
+  --alert: var(--warning);
 }
 
 .prose table {

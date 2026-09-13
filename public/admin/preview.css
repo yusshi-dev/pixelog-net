@@ -1,76 +1,397 @@
 /*
  * Sveltia CMS プレビューペイン用スタイル
  *
- * サイトの記事ページに寄せる。
- *   横幅     : .page { max-width: 780px }            （--max-w）
- *   タイトル : .article-h1 { font-size: clamp(1.2rem, 3.5vw, 1.65rem); font-weight: 500; line-height: 1.55 }
- *   本文     : .article-body { font-size: 0.95rem; line-height: 2.05 }
- *   書体     : システムフォント（Webフォントは読み込まない）
- *   配色     : --bg #f7f5f2 / --ink #1c1a17（旧デザインの値のまま・要更新）
+ * サイトの記事本文（src/styles/global.css の .prose）と同じ見た目にするための写し。
+ *   横幅     : サイトの記事カラムと同じ 36rem
+ *   タイトル : PostLayout の h1 と同じ（--text-l3 / 700 / 1.375 / -0.015em）
+ *   本文     : .prose と同じ。文字サイズは --text-* トークン、余白は em 指定
+ *   書体     : Noto Sans JP（サイトと同じ Google Fonts）＋ OS フォント
+ *   配色     : サイトのトークンを再定義。OS のダークモードに追従する
  *
- * デスクトップ（root ≒19.2px）換算: タイトル 約31.7px / 本文 約18.2px / h2 約22.7px / h3 約19.8px
+ * 構成（プレビュー専用のものと、サイトと共通のものを分けて書く）
+ *   1. プレビュー専用: リセット   … Tailwind preflight 相当（サイトには preflight がある）
+ *   2. サイトと共通: デザイントークン … global.css と同じ値
+ *   3. プレビュー専用: 枠         … root の流体スケール / body / 記事カラム / ラベル / タイトル
+ *   4. 記事本文                   … global.css の .prose と同じ（プレビューには preflight が無い）
  *
- * プレビューは iframe 内に描画され、管理画面の CSS 変数（--sui-*）は引き継がれないため、
- * サイズはここで明示する。組み込みスタイルに確実に反映させるため !important を使用。
+ * プレビューは iframe 内に描画され、管理画面の CSS 変数（--sui-*）や
+ * サイトの :root は引き継がれないため、必要なトークンはここで再定義する。
+ * CMS 組み込みのスタイルに確実に反映させるため !important を使用。
+ *
+ * 記事本文の CSS（global.css の .prose）を変えたときは、ここも合わせて更新し、
+ * 下のコマンドで見た目が一致しているか確認する（Tailwind の無い環境を再現して比較する）。
+ *   npm run build && npm run preview   # 別ターミナル
+ *   npm run check:preview
  */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400..700&display=swap');
 
-/* サイトの配色・書体に合わせる */
+/* =========================================================
+   プレビュー専用: リセット
+   サイト側は Tailwind の preflight が UA 既定の余白・字下げ・
+   見出しサイズ・summary の三角マーカーを消している。プレビューには
+   それが無いので、同じ役割のリセットをここにまとめる。
+   下の記事本文のルールは要素セレクタで特異度が上なので、こちらが優先される。
+   ========================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* 見出しの既定サイズ・太さは継承にする（h2〜h6 は下で明示する） */
+h1 {
+  font-size: inherit !important;
+  font-weight: inherit !important;
+}
+
+/* summary の三角マーカーを消す（+ / − は自前で描く） */
+summary {
+  list-style: none !important;
+}
+summary::-webkit-details-marker {
+  display: none !important;
+}
+
+/* 区切り線の色は継承（既定の gray にしない） */
+hr {
+  color: inherit !important;
+}
+
+/* =========================================================
+   サイトと共通: デザイントークン（global.css と同じ値）
+   ========================================================= */
+:root {
+  --canvas:   #f4f2ef;
+  --surface:  #ffffff;
+  --sunken:   #efece7;
+  --ink:      #1b1a17;
+  --ink2:     #4a463f;
+  --ink3:     #6e675d;
+  --brand:    #ff6e1e;
+  --brandink: #c2400a;
+  --bar:      #cfc5b8;
+  --barzero:  #e0d8cd;
+  --line:     rgba(27, 26, 23, 0.12);
+  --leader:   rgba(27, 26, 23, 0.28);
+  --code:     #1b1a17;
+  --codeink:  #e7e1d8;
+  --note:     #5f7d8c;
+  --caution:  #b07d1f;
+  --warning:  #b5524a;
+
+  --font-sans: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic UI",
+    "Yu Gothic", Meiryo, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+
+  --text-s3: calc(1rem * 8 / 11);
+  --text-s2: calc(1rem * 8 / 10);
+  --text-s1: calc(1rem * 8 / 9);
+  --text-m:  1rem;
+  --text-l1: calc(1rem * 8 / 7);
+  --text-l2: calc(1rem * 8 / 6);
+  --text-l3: calc(1rem * 8 / 5);
+}
+
+/* OS がダークモードのとき（Sveltia CMS も OS の設定に追従する） */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --canvas:   #141311;
+    --surface:  #1d1b18;
+    --sunken:   #262320;
+    --ink:      #ece7df;
+    --ink2:     #b6aea2;
+    --ink3:     #8d8578;
+    --brand:    #ff6e1e;
+    --brandink: #ff6e1e;
+    --bar:      #4a443c;
+    --barzero:  #2e2a25;
+    --line:     rgba(236, 231, 223, 0.16);
+    --leader:   rgba(236, 231, 223, 0.3);
+    --code:     #26231f;
+    --codeink:  #e7e1d8;
+    --note:     #8fb0c0;
+    --caution:  #d6a44a;
+    --warning:  #d98b83;
+  }
+}
+
+/* =========================================================
+   プレビュー専用: 枠
+   root の流体スケール / body / 記事カラム / フィールドラベル / タイトル
+   ========================================================= */
+
+/* サイトと同じ流体スケール（root 16px → 18px）。rem トークンが一緒に拡大する */
+html {
+  font-size: clamp(100%, calc((100vw - 44em) * 0.003 + 100%), 112.5%) !important;
+}
+
 body {
-  margin: 0;
-  padding: 8px 16px;
-  background-color: #f7f5f2 !important;
-  color: #1c1a17;
-  font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic UI', 'Yu Gothic',
-    Meiryo, 'Noto Sans JP', system-ui, sans-serif !important;
-  line-height: 1.9;
+  margin: 0 !important;
+  padding: 8px 16px !important;
+  background-color: var(--canvas) !important;
+  color: var(--ink);
+  font-family: var(--font-sans) !important;
+  line-height: 1.9 !important;
 }
 
-/* 記事の横幅をサイト（--max-w: 780px）に合わせて中央寄せ */
+/* 記事カラム（サイト: 59rem コンテナ − 15rem サイドバー − 5rem 間隔 = 36rem） */
 [data-key-path] > * {
-  max-width: 780px;
-  margin-inline: auto;
+  max-width: 36rem !important;
+  margin-inline: auto !important;
 }
 
-/* プレビューのフィールドラベル（「タイトル」「本文」）を消す */
+/* フィールドラベル（「タイトル」「本文」）を消す */
 [data-key-path='title'] > h4,
 [data-key-path='body'] > h4 {
   display: none !important;
 }
 
-/* 記事タイトル（サイトの clamp(1.2rem, 3.5vw, 1.65rem) のデスクトップ換算 ≒31.7px） */
+/* 記事タイトル（PostLayout の h1 と同じ） */
 [data-key-path='title'] p {
-  font-size: 32px !important;
-  font-weight: 500 !important;
-  line-height: 1.55 !important;
+  font-size: var(--text-l3) !important;
+  font-weight: 700 !important;
+  line-height: 1.375 !important;
+  letter-spacing: -0.015em !important;
+  color: var(--ink) !important;
 }
 
-/* 本文（Markdown のレンダリング結果） */
-p,
-li,
-blockquote,
-td,
-th {
-  font-size: 18px !important;
-  line-height: 2.05 !important;
+/* ---------------------------------------------------------
+   記事本文（src/styles/global.css の .prose と同じ）
+   --------------------------------------------------------- */
+p {
+  margin-bottom: 1.6em !important;
+  color: var(--ink2) !important;
 }
 
 h2 {
-  font-size: 23px !important;
+  margin: 2.6em 0 0.8em !important;
+  font-size: var(--text-l2) !important;
+  font-weight: 700 !important;
+  line-height: 1.45 !important;
+  letter-spacing: -0.01em !important;
+  color: var(--ink) !important;
 }
 
 h3 {
-  font-size: 20px !important;
+  margin: 2em 0 0.6em !important;
+  font-size: var(--text-l1) !important;
+  font-weight: 700 !important;
+  line-height: 1.5 !important;
+  color: var(--ink) !important;
 }
 
 h4 {
-  font-size: 18px !important;
+  margin: 1.8em 0 0.5em !important;
+  font-size: var(--text-m) !important;
+  font-weight: 700 !important;
+  line-height: 1.6 !important;
+  color: var(--ink) !important;
+}
+
+h5 {
+  margin: 1.6em 0 0.5em !important;
+  font-size: var(--text-s1) !important;
+  font-weight: 700 !important;
+  line-height: 1.7 !important;
+  color: var(--ink) !important;
+}
+
+h6 {
+  margin: 1.6em 0 0.5em !important;
+  font-size: var(--text-s2) !important;
+  font-weight: 700 !important;
+  line-height: 1.7 !important;
+  color: var(--ink) !important;
+}
+
+a {
+  color: var(--brandink) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 0.2em !important;
+}
+
+ul {
+  margin: 0 0 1.6em 0.7em !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+ul > li {
+  position: relative !important;
+  margin-bottom: 0.5em !important;
+  padding-left: 1.3em !important;
+  color: var(--ink2) !important;
+}
+ul > li::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0.15em !important;
+  top: 0.75em !important;
+  width: 5px !important;
+  height: 5px !important;
+  border-radius: 50% !important;
+  background: var(--ink3) !important;
+}
+
+ol {
+  margin: 0 0 1.6em 2em !important;
+  list-style: decimal !important;
+}
+ol > li {
+  margin-bottom: 0.5em !important;
+  color: var(--ink2) !important;
+}
+ol > li::marker {
+  color: var(--ink3) !important;
+  font-family: var(--font-mono) !important;
+  font-size: calc(8em / 9) !important;
+}
+
+li > ul,
+li > ol {
+  margin-top: 0.5em !important;
+}
+
+li > :last-child {
+  margin-bottom: 0 !important;
 }
 
 pre {
-  font-size: 15px !important;
+  margin: 1.6em 0 !important;
+  padding: 1.1rem 1.25rem !important;
+  background: var(--code) !important;
+  color: var(--codeink) !important;
+  border-radius: 8px !important;
+  overflow-x: auto !important;
+  font-family: var(--font-mono) !important;
+  font-size: var(--text-s2) !important;
   line-height: 1.75 !important;
 }
-
 pre code {
-  font-size: 1em !important;
+  font-family: inherit !important;
+}
+
+:not(pre) > code {
+  font-family: var(--font-mono) !important;
+  font-size: calc(8em / 9) !important;
+  padding: 0.12em 0.38em !important;
+  background: var(--sunken) !important;
+  border-radius: 4px !important;
+  color: var(--ink) !important;
+}
+
+figure {
+  margin: 1.8em 0 !important;
+}
+img {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  border-radius: 8px !important;
+}
+figcaption {
+  margin-top: 0.7rem !important;
+  font-size: var(--text-s2) !important;
+  line-height: 1.7 !important;
+  color: var(--ink3) !important;
+}
+
+blockquote {
+  margin: 1.8em 0 !important;
+  padding: 0.2em 0 0.2em 1.25em !important;
+  border-left: 3px solid var(--leader) !important;
+  color: var(--ink2) !important;
+}
+blockquote > :last-child {
+  margin-bottom: 0 !important;
+}
+
+.alert {
+  --alert: var(--note);
+  margin: 1.8em 0 !important;
+  padding: 1em 1.25em !important;
+  border-left: 0.4em solid var(--alert) !important;
+  background: var(--sunken) !important;
+  background: color-mix(in oklab, var(--alert) 10%, var(--canvas)) !important;
+  color: color-mix(in oklab, var(--alert) 40%, var(--ink)) !important;
+  font-size: var(--text-s1) !important;
+}
+.alert :is(p, li) {
+  color: inherit !important;
+}
+.alert > :last-child {
+  margin-bottom: 0 !important;
+}
+.alert.caution {
+  --alert: var(--caution);
+}
+.alert.warning {
+  --alert: var(--warning);
+}
+
+table {
+  width: 100% !important;
+  margin: 1.8em 0 !important;
+  border-collapse: collapse !important;
+  font-size: var(--text-s1) !important;
+}
+th,
+td {
+  padding: 0.5em 0.75em !important;
+  border-bottom: 1px solid var(--line) !important;
+  text-align: left !important;
+}
+th {
+  color: var(--ink) !important;
+  font-weight: 600 !important;
+}
+
+hr {
+  margin: 2.6em 0 !important;
+  border: 0 !important;
+  border-top: 1px solid var(--line) !important;
+}
+
+details {
+  margin: 1.8em 0 !important;
+  background: var(--surface) !important;
+  font-size: var(--text-s1) !important;
+  border-radius: 8px !important;
+}
+details[open] {
+  padding-bottom: 1em !important;
+}
+summary {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1em !important;
+  padding: 0.75em 1em !important;
+  background: var(--surface) !important;
+  border-radius: 8px !important;
+  color: var(--ink) !important;
+  line-height: 1.5 !important;
+  cursor: pointer !important;
+}
+summary::after {
+  content: "+" !important;
+  flex: none !important;
+  font-family: var(--font-mono) !important;
+  color: var(--ink3) !important;
+}
+details[open] > summary {
+  margin-bottom: 1.2em !important;
+  border-radius: 8px 8px 0 0 !important;
+}
+details[open] > summary::after {
+  content: "−" !important;
+}
+details > :not(summary) {
+  margin-right: 1em !important;
+  margin-left: 1em !important;
+}
+details > :last-child {
+  margin-bottom: 0 !important;
 }

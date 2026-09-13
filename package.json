@@ -9,7 +9,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check:preview": "node scripts/check-preview-css.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
