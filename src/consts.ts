@@ -10,7 +10,7 @@ export const NAV_ITEMS = [
   { key: "posts", href: "/", label: "記事" },
   { key: "categories", href: "/categories/", label: "カテゴリ" },
   { key: "tags", href: "/tags/", label: "タグ" },
-  { key: "about", href: "/about/", label: "このサイト" },
+  { key: "about", href: "/about/", label: "このサイトについて" },
 ] as const;
 
 export type NavKey = (typeof NAV_ITEMS)[number]["key"];
@@ -34,3 +34,6 @@ export const FEED_MAX_ITEMS = 10;
 
 /** 一覧の1ページあたりの件数 */
 export const POSTS_PER_PAGE = 10;
+
+/** サイドバー「記録の推移」で見せる月数 */
+export const ACTIVITY_MONTHS = 12;

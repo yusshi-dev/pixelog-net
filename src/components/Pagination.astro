@@ -2,39 +2,93 @@
 interface Props {
   currentPage: number;
   lastPage: number;
-  urlPrev?: string;
-  urlNext?: string;
+  /**
+   * 1ページ目のURL。2ページ目以降は末尾に "2/" を足して組み立てるので、
+   * 末尾にスラッシュを付けて渡す（例: "/"、"/categories/技術メモ/"）。
+   */
+  basePath: string;
 }
 
-const { currentPage, lastPage, urlPrev, urlNext } = Astro.props;
+const { currentPage, lastPage, basePath } = Astro.props;
+
+// Astro の paginate が生成するURLの規則に合わせる（1ページ目だけサフィックス無し）
+const urlForPage = (page: number) => (page === 1 ? basePath : `${basePath}${page}/`);
+
+const pages = Array.from({ length: lastPage }, (_, index) => index + 1);
+
+const hasPrev = currentPage > 1;
+const hasNext = currentPage < lastPage;
+
+const linkClass = "py-2 leading-6 text-brandink hover:underline hover:underline-offset-4";
+const disabledClass = "py-2 leading-6 text-ink3 opacity-40";
 ---
 
 {
   lastPage > 1 && (
-    <nav class="mt-14 flex items-center justify-center gap-10 text-sm" aria-label="ページ送り">
-      {urlPrev ? (
-        <a href={urlPrev} class="text-brandink hover:underline hover:underline-offset-4">
-          ← 前へ
+    <nav class="mt-14 flex items-center justify-center gap-6 text-s1" aria-label="ページ送り">
+      {hasPrev ? (
+        <a href={urlForPage(currentPage - 1)} class={linkClass}>
+          <span aria-hidden="true">«</span> Newer
         </a>
       ) : (
-        <span class="text-ink3 opacity-40" aria-disabled="true">
-          ← 前へ
+        <span class={disabledClass} aria-disabled="true">
+          <span aria-hidden="true">«</span> Newer
         </span>
       )}
 
-      <span class="font-mono text-[0.8125rem] text-ink3">
-        {currentPage} / {lastPage}
+      <span class="flex items-center gap-2">
+        <label for="page-select" class="sr-only">ページを選択</label>
+        <span class="relative">
+          <select
+            id="page-select"
+            class="appearance-none rounded-lg bg-surface py-2 pl-3.5 pr-10 text-m leading-6 text-ink"
+          >
+            {pages.map((page) => (
+              <option value={urlForPage(page)} selected={page === currentPage}>
+                {page}
+              </option>
+            ))}
+          </select>
+          <span
+            class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-ink3"
+            aria-hidden="true"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              class="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            >
+              <path d="m6 9 6 6 6-6"></path>
+            </svg>
+          </span>
+        </span>
+        <span class="font-mono text-s2 text-ink3">/ {lastPage}</span>
       </span>
 
-      {urlNext ? (
-        <a href={urlNext} class="text-brandink hover:underline hover:underline-offset-4">
-          次へ →
+      {hasNext ? (
+        <a href={urlForPage(currentPage + 1)} class={linkClass}>
+          Older <span aria-hidden="true">»</span>
         </a>
       ) : (
-        <span class="text-ink3 opacity-40" aria-disabled="true">
-          次へ →
+        <span class={disabledClass} aria-disabled="true">
+          Older <span aria-hidden="true">»</span>
         </span>
       )}
     </nav>
   )
 }
+
+<script>
+  // select の選択肢と選択状態はビルド時にHTMLへ出力済み。
+  // ここでやるのは「選ばれたら移動する」ことだけ。
+  const pageSelect = document.getElementById("page-select");
+
+  if (pageSelect) {
+    pageSelect.addEventListener("change", () => {
+      if (pageSelect.value) window.location.href = pageSelect.value;
+    });
+  }
+</script>

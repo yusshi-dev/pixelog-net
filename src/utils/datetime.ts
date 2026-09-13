@@ -35,3 +35,18 @@ export const formatISODatetime = (date: Date): string => {
  */
 export const getJstYear = (date: Date): number =>
   Number(new Intl.DateTimeFormat("en-US", { year: "numeric", timeZone: JST_TIME_ZONE }).format(date));
+
+/**
+ * 日本時間での年月を取得する（月別集計用）
+ */
+export const getJstYearMonth = (date: Date): { year: number; month: number } => {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    timeZone: JST_TIME_ZONE,
+  }).formatToParts(date);
+
+  const partMap = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+
+  return { year: Number(partMap.year), month: Number(partMap.month) };
+};

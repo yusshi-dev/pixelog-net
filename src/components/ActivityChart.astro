@@ -1,47 +1,88 @@
 ---
-import { formatYmd } from "../utils/datetime";
-import type { YearCount } from "../utils/posts";
+import { getMonthPath } from "../utils/slug";
+import type { MonthCount } from "../utils/posts";
 
 interface Props {
-  yearActivity: YearCount[];
-  totalPosts: number;
-  firstPostAt: Date;
-  lastPostAt: Date;
+  monthActivity: MonthCount[];
+  activityPostCount: number;
+  activityMonths: number;
 }
 
-const { yearActivity, totalPosts, firstPostAt, lastPostAt } = Astro.props;
+const { monthActivity, activityPostCount, activityMonths } = Astro.props;
 
-const max = Math.max(...yearActivity.map((y) => y.count), 1);
+const counts = monthActivity.map((item) => item.count);
+const max = Math.max(...counts, 1);
 
-const barColor = (count: number) => {
+// 最多件数の月が複数あるときは、いちばん新しい月だけを強調する
+const peakIndex = counts.lastIndexOf(max);
+
+const barColor = (count: number, index: number) => {
   if (count === 0) return "bg-barzero";
-  return count === max ? "bg-brand" : "bg-bar";
+  return index === peakIndex ? "bg-brand" : "bg-bar";
 };
 
-// 0件の年は細い線だけ残して、書かなかった年も見えるようにする
+// 0件の月は細い線だけ残して、書かなかった月も見えるようにする
 const barHeight = (count: number) =>
   count === 0 ? "3px" : `${Math.max(6, Math.round((count / max) * 100))}%`;
 
-const chartLabel = `年ごとの投稿数。${yearActivity
-  .map((y) => `${y.year}年${y.count}件`)
-  .join("、")}。合計${totalPosts}件。`;
----
+// 端の列はツールチップが枠からはみ出すので、内側に寄せる
+const tooltipPosition = (index: number) => {
+  if (index === 0) return "left-0";
+  if (index === monthActivity.length - 1) return "right-0";
+  return "left-1/2 -translate-x-1/2";
+};
 
-<div class="flex h-10 items-end gap-[3px]" role="img" aria-label={chartLabel}>
+const formatMonth = (item: MonthCount) => `${item.year}.${String(item.month).padStart(2, "0")}`;
+
+const windowStart = formatMonth(monthActivity[0]);
+const windowEnd = formatMonth(monthActivity[monthActivity.length - 1]);
+
+// グラフの中身は文章でも渡す。バーはリンクか装飾なので、これが無いと読み上げられない。
+const chartLabel = `直近${activityMonths}ヶ月の投稿数。${monthActivity
+  .map((item) => `${item.year}年${item.month}月${item.count}件`)
+  .join("、")}。合計${activityPostCount}件。`;
+---
+<p class="mt-3 font-mono text-s2 text-ink3">
+  {windowStart} ～ {windowEnd}
+</p>
+
+<p class="sr-only">{chartLabel}</p>
+
+<div class="flex h-10 gap-[3px]">
   {
-    yearActivity.map((year, index) => (
-      <span
-        class:list={["bar flex-1 rounded-[1px]", barColor(year.count)]}
-        style={{ "--i": index, height: barHeight(year.count) }}
-      />
-    ))
+    monthActivity.map((item, index) => {
+      const hasPosts = item.count > 0;
+      // 投稿がある月だけ月別アーカイブへ飛ばす（空の月のURLは作っていない）
+      const Wrapper = hasPosts ? "a" : "span";
+
+      return (
+        // バーは細いので、列の全高をhoverとクリックの当たり判定にする
+        <Wrapper
+          href={hasPosts ? getMonthPath(item.year, item.month) : undefined}
+          aria-label={hasPosts ? `${item.year}年${item.month}月 ${item.count}件` : undefined}
+          class="group relative h-full flex-1"
+        >
+          <span
+            class:list={[
+              "bar absolute inset-x-0 bottom-0 rounded-[1px]",
+              barColor(item.count, index),
+            ]}
+            style={{ "--i": index, height: barHeight(item.count) }}
+          />
+          <span
+            class:list={[
+              "pointer-events-none absolute -top-7 z-10 whitespace-nowrap rounded bg-ink px-2 py-0.5 font-mono text-s2 text-canvas opacity-0 transition-opacity group-hover:opacity-100",
+              tooltipPosition(index),
+            ]}
+          >
+            {formatMonth(item)} {item.count}件
+          </span>
+        </Wrapper>
+      );
+    })
   }
 </div>
 
-<div class="mt-2 flex gap-[3px] font-mono text-[0.625rem] text-ink3" aria-hidden="true">
-  {yearActivity.map((year) => <span class="flex-1 text-center">{String(year.year).slice(-2)}</span>)}
+<div class="mt-2 flex gap-[3px] font-mono text-s3 text-ink3" aria-hidden="true">
+  {monthActivity.map((item) => <span class="flex-1 text-center">{item.month}</span>)}
 </div>
-
-<p class="mt-3 font-mono text-[0.75rem] text-ink3">
-  {totalPosts}件 · {formatYmd(firstPostAt).slice(0, 7)} — {formatYmd(lastPostAt).slice(0, 7)}
-</p>

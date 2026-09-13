@@ -9,7 +9,7 @@ const { heading, forId } = Astro.props;
 ---
 
 <section>
-  <h2 class="mb-3 text-[0.9375rem] font-bold">
+  <h2 class="mb-3 text-s1 font-bold">
     {forId ? <label for={forId}>{heading}</label> : heading}
   </h2>
   <slot />

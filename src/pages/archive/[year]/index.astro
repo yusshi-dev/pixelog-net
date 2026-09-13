@@ -1,0 +1,32 @@
+---
+import SiteLayout from "../../../layouts/SiteLayout.astro";
+import PageHeading from "../../../components/PageHeading.astro";
+import PostList from "../../../components/PostList.astro";
+import { getJstYear } from "../../../utils/datetime";
+import { getPublishedPosts, getYears, type Post } from "../../../utils/posts";
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+
+  return getYears(posts).map((year) => ({
+    params: { year: String(year) },
+    props: {
+      year,
+      posts: posts.filter((post) => getJstYear(post.data.published_at) === year),
+    },
+  }));
+}
+
+interface Props {
+  year: number;
+  posts: Post[];
+}
+
+const { year, posts } = Astro.props;
+---
+
+<SiteLayout documentTitle={`${year}年の記録`} current="posts">
+  <PageHeading label="アーカイブ" title={`${year}年`} count={posts.length} />
+
+  <PostList posts={posts} />
+</SiteLayout>

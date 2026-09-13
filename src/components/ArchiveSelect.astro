@@ -1,4 +1,6 @@
 ---
+import { getYearPath } from "../utils/slug";
+
 interface Props {
   years: number[];
 }
@@ -9,10 +11,10 @@ const { years } = Astro.props;
 <div class="relative">
   <select
     id="archive-year"
-    class="w-full appearance-none rounded-lg bg-surface py-2.5 pl-3.5 pr-10 text-[1rem] text-ink"
+    class="w-full appearance-none rounded-lg bg-surface py-2 pl-3.5 pr-10 text-m leading-6 text-ink"
   >
     <option value="">年を選択</option>
-    {years.map((year) => <option value={`/posts/#${year}`}>{year}年</option>)}
+    {years.map((year) => <option value={getYearPath(year)}>{year}年</option>)}
   </select>
 
   <span

@@ -1,5 +1,5 @@
 import { getCollection, type CollectionEntry } from "astro:content";
-import { getJstYear } from "./datetime";
+import { getJstYear, getJstYearMonth } from "./datetime";
 
 export type Post = CollectionEntry<"blog">;
 
@@ -9,9 +9,11 @@ export interface Counted {
   count: number;
 }
 
-/** 年と件数の組 */
-export interface YearCount {
+/** 年月と件数の組 */
+export interface MonthCount {
   year: number;
+  /** 1〜12 */
+  month: number;
   count: number;
 }
 
@@ -48,18 +50,35 @@ export const countByTag = (posts: Post[]): Counted[] =>
     .sort((a, b) => b.count - a.count);
 
 /**
- * 最初の投稿年から最後の投稿年までを、件数0の年も埋めて昇順で返す。
- * スパークラインで「書いていない年」も見せたいので、間を詰めない。
+ * 最も新しい投稿の月から遡って months ヶ月分の件数を、古い順で返す。
+ * 投稿が無い月も0件として残す（グラフの間隔を詰めないため）。
+ *
+ * 終点を「今日」ではなく「最新の投稿」にしているのは、記事を追加せずに
+ * ビルドしたときに窓だけが進んで、直近の記録が消えてしまうのを避けるため。
  */
-export const countByYearRange = (posts: Post[]): YearCount[] => {
+export const countByMonthRange = (posts: Post[], months: number): MonthCount[] => {
   if (posts.length === 0) return [];
 
-  const years = posts.map((post) => getJstYear(post.data.published_at));
-  const min = Math.min(...years);
-  const max = Math.max(...years);
+  const newest = getJstYearMonth(
+    new Date(Math.max(...posts.map((post) => post.data.published_at.getTime()))),
+  );
 
-  return Array.from({ length: max - min + 1 }, (_, i) => {
-    const year = min + i;
-    return { year, count: years.filter((y) => y === year).length };
-  });
+  const buckets: MonthCount[] = [];
+  for (let offset = months - 1; offset >= 0; offset--) {
+    // Date.UTC は月に負の値を渡しても年をまたいで繰り下がる
+    const cursor = new Date(Date.UTC(newest.year, newest.month - 1 - offset, 1));
+    buckets.push({
+      year: cursor.getUTCFullYear(),
+      month: cursor.getUTCMonth() + 1,
+      count: 0,
+    });
+  }
+
+  for (const post of posts) {
+    const { year, month } = getJstYearMonth(post.data.published_at);
+    const bucket = buckets.find((item) => item.year === year && item.month === month);
+    if (bucket) bucket.count += 1;
+  }
+
+  return buckets;
 };

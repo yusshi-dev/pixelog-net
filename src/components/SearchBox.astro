@@ -16,25 +16,29 @@
     type="search"
     placeholder="キーワード"
     autocomplete="off"
-    class="w-full rounded-lg bg-surface py-3 pl-3.5 pr-14 text-[1rem] text-ink placeholder:text-ink3"
+    class="w-full rounded-lg bg-surface py-2 pl-3.5 pr-12 text-m leading-6 text-ink placeholder:text-ink3"
   />
   <input type="hidden" name="sites" value="pixelog.net" />
 
   <button
     type="submit"
-    class="absolute right-1 top-1 grid h-11 w-11 place-items-center rounded-lg text-ink3 hover:bg-canvas hover:text-ink"
+    class="group absolute inset-y-0 right-0 grid w-10 place-items-center text-ink3"
   >
     <span class="sr-only">検索する</span>
-    <svg
-      viewBox="0 0 24 24"
-      class="h-5 w-5"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.75"
-      stroke-linecap="round"
-      aria-hidden="true"
+    <span
+      class="grid h-8 w-8 place-items-center rounded-lg group-hover:bg-canvas group-hover:text-ink"
     >
-      <circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4.5 4.5"></path>
-    </svg>
+      <svg
+        viewBox="0 0 24 24"
+        class="h-5 w-5"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4.5 4.5"></path>
+      </svg>
+    </span>
   </button>
 </form>

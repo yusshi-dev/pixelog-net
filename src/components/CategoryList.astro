@@ -13,11 +13,11 @@ const { categories } = Astro.props;
     categories.map((category) => (
       <a
         href={`/categories/${category.name}/`}
-        class="flex items-baseline gap-2 py-1.5 text-[0.9375rem] text-ink2 transition hover:text-brandink"
+        class="flex items-baseline gap-2 py-1.5 text-s1 text-ink2 transition hover:text-brandink"
       >
         <span>{category.name}</span>
         <span class="leader flex-1" aria-hidden="true" />
-        <span class="font-mono text-[0.8125rem] text-ink3">{category.count}</span>
+        <span class="font-mono text-s2 text-ink3">{category.count}</span>
       </a>
     ))
   }

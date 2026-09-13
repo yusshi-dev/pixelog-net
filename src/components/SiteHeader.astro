@@ -28,8 +28,8 @@ const Wordmark = isHome ? "h1" : "div";
   <div class="absolute inset-0 bg-[rgba(20,18,16,0.52)]" aria-hidden="true"></div>
 
   <Wordmark class="relative px-6 text-center text-white [text-shadow:0_1px_14px_rgba(0,0,0,0.4)]">
-    <a href="/" class="font-en text-[1.75rem] font-bold uppercase tracking-[0.22em] sm:text-[2.25rem]">Pixelog</a>
-    <p class="mt-2 text-[0.875rem] text-white/85">{SITE.description}</p>
+    <a href="/" class="font-en text-l4 font-bold uppercase tracking-[0.22em]">Pixelog</a>
+    <p class="mt-2 text-s2 text-white/85">{SITE.description}</p>
   </Wordmark>
 
   <div class="absolute inset-x-0 top-0">
@@ -51,7 +51,7 @@ const Wordmark = isHome ? "h1" : "div";
         </summary>
 
         <nav
-          class="absolute left-0 top-[calc(100%+0.4rem)] grid min-w-[12rem] gap-1 rounded-card bg-surface p-2 text-ink shadow-popover"
+          class="absolute left-0 top-[calc(100%+0.4rem)] grid min-w-[10.75rem] gap-1 rounded-card bg-surface p-2 text-ink shadow-popover"
           aria-label="メイン"
         >
           {
@@ -60,7 +60,7 @@ const Wordmark = isHome ? "h1" : "div";
                 href={item.href}
                 aria-current={current === item.key ? "page" : undefined}
                 class:list={[
-                  "rounded px-3 py-2.5 text-sm hover:bg-canvas",
+                  "rounded px-2.5 py-2 text-s2 hover:bg-canvas",
                   current === item.key ? "" : "text-ink2 hover:text-ink",
                 ]}
               >

@@ -1,15 +1,18 @@
 ---
 import SiteLayout from "./SiteLayout.astro";
 import PostMeta from "../components/PostMeta.astro";
+import PostPager from "../components/PostPager.astro";
 import TagLinks from "../components/TagLinks.astro";
 import { getExcerpt } from "../utils/excerpt";
 import type { Post } from "../utils/posts";
 
 interface Props {
   post: Post;
+  older?: Post;
+  newer?: Post;
 }
 
-const { post } = Astro.props;
+const { post, older, newer } = Astro.props;
 const description = getExcerpt(post, 120);
 ---
 
@@ -17,7 +20,7 @@ const description = getExcerpt(post, 120);
   <article>
     <PostMeta publishedAt={post.data.published_at} category={post.data.category} />
 
-    <h1 class="mt-3 text-[1.5rem] font-bold leading-snug tracking-[-0.015em] text-ink sm:text-[1.75rem]">
+    <h1 class="mt-3 text-l3 font-bold leading-snug tracking-[-0.015em] text-ink">
       {post.data.title}
     </h1>
 
@@ -25,9 +28,15 @@ const description = getExcerpt(post, 120);
       <slot />
     </div>
 
-    <footer class="mt-14 flex flex-wrap items-baseline gap-x-5 gap-y-2">
-      <span class="font-mono text-[0.8125rem] text-ink3">タグ</span>
-      <TagLinks tags={post.data.tags ?? []} />
-    </footer>
+    {
+      (post.data.tags?.length ?? 0) > 0 && (
+        <footer class="mt-14 flex flex-wrap items-center gap-x-3 gap-y-2">
+          <span class="font-mono text-s2 text-ink3">タグ</span>
+          <TagLinks tags={post.data.tags ?? []} />
+        </footer>
+      )
+    }
+
+    <PostPager older={older} newer={newer} />
   </article>
 </SiteLayout>

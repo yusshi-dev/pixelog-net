@@ -26,7 +26,7 @@ const { documentTitle, description = SITE.description } = Astro.props;
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400..700&display=swap"
       rel="stylesheet"
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -43,17 +43,9 @@ const { documentTitle, description = SITE.description } = Astro.props;
         if ((saved || os) === "dark") document.documentElement.classList.add("dark");
       })();
     </script>
-
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5NYKFVQ1GE"></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-5NYKFVQ1GE');
-    </script>
   </head>
 
-  <body class="bg-canvas font-sans text-[1.0625rem] leading-[1.9] text-ink antialiased">
+  <body class="bg-canvas font-sans text-m leading-[1.9] text-ink antialiased">
     <slot />
   </body>
 </html>

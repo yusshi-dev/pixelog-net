@@ -16,13 +16,13 @@ const href = `/posts/${getPostSlug(post)}/`;
 ---
 
 <article>
-  <time datetime={formatISODatetime(post.data.published_at)} class="font-mono text-[0.8125rem] text-ink3">
+  <time datetime={formatISODatetime(post.data.published_at)} class="font-mono text-s2 text-ink3">
     {formatYmd(post.data.published_at)}
   </time>
 
-  <Title class="mt-1.5 text-[1.125rem] font-bold leading-snug tracking-[-0.01em]">
+  <Title class="mt-1.5 text-l1 font-bold leading-snug tracking-[-0.01em]">
     <a href={href} class="hover:text-brandink">{post.data.title}</a>
   </Title>
 
-  {excerpt && <p class="mt-2 text-[0.9375rem] leading-[1.85] text-ink2">{excerpt}</p>}
+  {excerpt && <p class="mt-3 text-s1 leading-[1.85] text-ink2">{excerpt}</p>}
 </article>

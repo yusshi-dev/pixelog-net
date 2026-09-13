@@ -17,10 +17,5 @@ const { page } = Astro.props;
 <SiteLayout isHome current="posts">
   <PostList posts={page.data} />
 
-  <Pagination
-    currentPage={page.currentPage}
-    lastPage={page.lastPage}
-    urlPrev={page.url.prev}
-    urlNext={page.url.next}
-  />
+  <Pagination currentPage={page.currentPage} lastPage={page.lastPage} basePath="/" />
 </SiteLayout>

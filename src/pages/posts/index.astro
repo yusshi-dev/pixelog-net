@@ -3,14 +3,13 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
 import PageHeading from "../../components/PageHeading.astro";
 import PostList from "../../components/PostList.astro";
 import { getJstYear } from "../../utils/datetime";
-import { getPublishedPosts } from "../../utils/posts";
+import { getYearPath } from "../../utils/slug";
+import { getPublishedPosts, getYears } from "../../utils/posts";
 
 const posts = await getPublishedPosts();
 
-// 年ごとにまとめて表示する。サイドバーの「年月」はここに飛ぶ
-const years = [...new Set(posts.map((post) => getJstYear(post.data.published_at)))].sort(
-  (a, b) => b - a,
-);
+// 年ごとにまとめて表示する。各年は年別ページ（/archive/<年>/）にも分かれている
+const years = getYears(posts);
 
 const groups = years.map((year) => ({
   year,
@@ -25,11 +24,10 @@ const groups = years.map((year) => ({
     {
       groups.map((group) => (
         <section>
-          <h2
-            id={String(group.year)}
-            class="mb-2 font-mono text-[0.8125rem] font-medium tracking-[0.1em] text-ink2"
-          >
-            {group.year}
+          <h2 class="mb-2 font-mono text-s2 font-medium tracking-[0.1em] text-ink2">
+            <a href={getYearPath(group.year)} class="transition hover:text-brandink">
+              {group.year}
+            </a>
           </h2>
           <PostList posts={group.posts} titleTag="h3" />
         </section>

@@ -12,10 +12,10 @@ const shown = limit ? tags.slice(0, limit) : tags;
 
 /** 件数が多いタグほど大きく濃くする */
 const styleFor = (count: number): string => {
-  if (count >= 20) return "text-[1rem] text-ink";
-  if (count >= 10) return "text-[0.9375rem] text-ink2";
-  if (count >= 4) return "text-[0.875rem] text-ink3";
-  return "text-[0.8125rem] text-ink3";
+  if (count >= 20) return "text-m text-ink";
+  if (count >= 10) return "text-s1 text-ink2";
+  if (count >= 4) return "text-s2 text-ink3";
+  return "text-s3 text-ink3";
 };
 ---
 
@@ -27,7 +27,7 @@ const styleFor = (count: number): string => {
         class:list={["transition hover:text-brandink", styleFor(tag.count)]}
       >
         {tag.name}
-        <span class="ml-1 font-mono text-[0.7rem] text-ink3">{tag.count}</span>
+        <span class="ml-1 font-mono text-s3 text-ink3">{tag.count}</span>
       </a>
     ))
   }

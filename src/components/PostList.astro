@@ -14,7 +14,7 @@ const { posts, titleTag = "h2" } = Astro.props;
 <ol class="divide-y divide-line">
   {
     posts.map((post) => (
-      <li class="py-10 first:pt-0 last:pb-0">
+      <li class="py-9 first:pt-0 last:pb-0">
         <PostListItem post={post} titleTag={titleTag} />
       </li>
     ))

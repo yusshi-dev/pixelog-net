@@ -59,11 +59,28 @@
   --color-barzero:  var(--barzero);
   --color-line:     var(--line);
 
-  --font-sans: "Zen Kaku Gothic New", system-ui, sans-serif;
-  --font-en:   "IBM Plex Sans", "Zen Kaku Gothic New", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Google Fonts の Noto Sans JP（和文・欧文とも Noto Sans 系）。
+     読み込みに失敗した場合は OS の書体へフォールバックする。 */
+  --font-sans: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic UI",
+    "Yu Gothic", Meiryo, system-ui, sans-serif;
+  --font-en: "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
-  --container-page: 66rem;
+  /* 調和数列による文字サイズ。基準 1rem・分子 8。
+     size_lk = 1rem * 8/(8-k) / size_sk = 1rem * 8/(8+k) */
+  --text-s3: calc(1rem * 8 / 11); /* 0.727rem */
+  --text-s2: calc(1rem * 8 / 10); /* 0.8rem */
+  --text-s1: calc(1rem * 8 / 9);  /* 0.889rem */
+  --text-m:  1rem;                /* 基準 */
+  --text-l1: calc(1rem * 8 / 7);  /* 1.143rem */
+  --text-l2: calc(1rem * 8 / 6);  /* 1.333rem */
+  --text-l3: calc(1rem * 8 / 5);  /* 1.6rem */
+  --text-l4: calc(1rem * 8 / 4);  /* 2rem */
+
+  /* root の流体スケール（最大 112.5%）で広がった分を戻し、
+     底上げ前に近い実寸（root 18px で約 1062px）にする。 */
+  --container-page: 59rem;
 
   --radius-card: 12px;
 
@@ -75,6 +92,10 @@
    ========================================================= */
 html {
   scroll-behavior: smooth;
+  /* 全体の文字サイズを画面幅に応じて 16px → 18px まで少し底上げする。
+     rem トークン（--text-*）はこの root を基準に拡大するので、
+     調和数列の比率はそのままに全体が一回り大きくなる。 */
+  font-size: clamp(100%, calc((100vw - 44em) * .003 + 100%), 112.5%);
 }
 
 body {
@@ -114,11 +135,11 @@ summary::-webkit-details-marker {
   border-bottom: 1px dotted var(--leader);
 }
 
-/* 記録の推移スパークライン */
+/* 記録の推移スパークライン（12本なので、遅延は控えめにする） */
 .bar {
   transform-origin: bottom;
   animation: grow 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) both;
-  animation-delay: calc(var(--i) * 45ms);
+  animation-delay: calc(var(--i) * 30ms);
 }
 
 @keyframes grow {
@@ -129,6 +150,7 @@ summary::-webkit-details-marker {
 /* =========================================================
    記事本文
    Markdown の生要素に対して当てるので、親に .prose を付ける。
+   文字サイズは調和数列のトークン（--text-*）で揃える。
    ========================================================= */
 .prose p {
   margin-bottom: 1.6em;
@@ -137,7 +159,7 @@ summary::-webkit-details-marker {
 
 .prose h2 {
   margin: 2.6em 0 0.8em;
-  font-size: 1.25rem;
+  font-size: var(--text-l2);
   font-weight: 700;
   line-height: 1.45;
   letter-spacing: -0.01em;
@@ -149,7 +171,7 @@ summary::-webkit-details-marker {
   align-items: center;
   gap: 0.5rem;
   margin: 2em 0 0.6em;
-  font-size: 1.0625rem;
+  font-size: var(--text-l1);
   font-weight: 700;
   line-height: 1.5;
   color: var(--ink);
@@ -201,7 +223,7 @@ summary::-webkit-details-marker {
 .prose ol > li::marker {
   color: var(--ink3);
   font-family: var(--font-mono);
-  font-size: 0.85em;
+  font-size: calc(8em / 9);
 }
 
 .prose pre {
@@ -212,7 +234,7 @@ summary::-webkit-details-marker {
   border-radius: 8px;
   overflow-x: auto;
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-size: var(--text-s2);
   line-height: 1.75;
   -webkit-overflow-scrolling: touch;
 }
@@ -222,7 +244,7 @@ summary::-webkit-details-marker {
 
 .prose :not(pre) > code {
   font-family: var(--font-mono);
-  font-size: 0.86em;
+  font-size: calc(8em / 9);
   padding: 0.12em 0.38em;
   background: var(--sunken);
   border-radius: 4px;
@@ -240,7 +262,7 @@ summary::-webkit-details-marker {
 }
 .prose figcaption {
   margin-top: 0.7rem;
-  font-size: 0.8125rem;
+  font-size: var(--text-s2);
   line-height: 1.7;
   color: var(--ink3);
 }
@@ -256,7 +278,7 @@ summary::-webkit-details-marker {
   width: 100%;
   margin: 1.8em 0;
   border-collapse: collapse;
-  font-size: 0.9375rem;
+  font-size: var(--text-s1);
 }
 .prose th,
 .prose td {

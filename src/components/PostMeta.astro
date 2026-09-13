@@ -9,17 +9,14 @@ interface Props {
 const { publishedAt, category } = Astro.props;
 ---
 
-<div class="flex items-center gap-2 font-mono text-[0.8125rem] text-ink3">
+<div class="flex items-center gap-2 font-mono text-s2 text-ink3">
   <time datetime={formatISODatetime(publishedAt)}>{formatYmd(publishedAt)}</time>
 
   {
     category && (
-      <>
-        <span aria-hidden="true">·</span>
-        <a href={`/categories/${category}/`} class="hover:text-brandink">
-          {category}
-        </a>
-      </>
+      <a href={`/categories/${category}/`} class="hover:text-brandink">
+        {category}
+      </a>
     )
   }
 </div>

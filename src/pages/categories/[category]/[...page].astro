@@ -29,7 +29,6 @@ const { page, category } = Astro.props;
   <Pagination
     currentPage={page.currentPage}
     lastPage={page.lastPage}
-    urlPrev={page.url.prev}
-    urlNext={page.url.next}
+    basePath={`/categories/${category}/`}
   />
 </SiteLayout>
