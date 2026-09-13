@@ -11,10 +11,10 @@ interface Props {
 const { posts, titleTag = "h2" } = Astro.props;
 ---
 
-<ol class="divide-y divide-line">
+<ol>
   {
     posts.map((post) => (
-      <li class="py-8 first:pt-0 last:pb-0">
+      <li class="border-b border-line py-8 first:pt-0">
         <PostListItem post={post} titleTag={titleTag} />
       </li>
     ))

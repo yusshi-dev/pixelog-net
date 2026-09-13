@@ -16,7 +16,10 @@ const href = `/posts/${getPostSlug(post)}/`;
 ---
 
 <article>
-  <time datetime={formatISODatetime(post.data.published_at)} class="font-mono text-s2 text-ink3">
+  <time
+    datetime={formatISODatetime(post.data.published_at)}
+    class="block font-mono text-s2 leading-snug text-ink3"
+  >
     {formatYmd(post.data.published_at)}
   </time>
 

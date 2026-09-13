@@ -37,6 +37,21 @@ const summary = await getSiteSummary();
         <slot />
       </main>
 
+      {/* スマホでは本文とサイドバーが縦に並ぶので、境目に波線を置く */}
+      <svg width="100%" height="8" class="text-line lg:hidden" aria-hidden="true">
+        <defs>
+          <pattern id="wave-divider" width="16" height="8" patternUnits="userSpaceOnUse">
+            <path
+              d="M0 4 C2 1 6 1 8 4 S14 7 16 4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"></path>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#wave-divider)"></rect>
+      </svg>
+
       <Sidebar summary={summary} />
     </div>
   </div>

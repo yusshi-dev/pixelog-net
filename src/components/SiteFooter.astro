@@ -4,7 +4,7 @@ import { FOOTER_LINKS, SITE } from "../consts";
 const year = new Date().getFullYear();
 ---
 
-<footer class="bg-sunken py-12 text-center">
+<footer class="bg-sunken py-8 text-center">
   <nav class="flex justify-center gap-5 text-s2 text-ink2" aria-label="フッター">
     {FOOTER_LINKS.map((link) => <a href={link.href} class="hover:text-ink">{link.label}</a>)}
   </nav>
