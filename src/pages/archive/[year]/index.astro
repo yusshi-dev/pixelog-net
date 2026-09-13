@@ -26,7 +26,7 @@ const { year, posts } = Astro.props;
 ---
 
 <SiteLayout documentTitle={`${year}年の記録`} current="posts">
-  <PageHeading label="アーカイブ" title={`${year}年`} count={posts.length} />
+  <PageHeading title={`${year}年`} count={posts.length} />
 
   <PostList posts={posts} />
 </SiteLayout>

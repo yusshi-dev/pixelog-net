@@ -22,7 +22,7 @@ const { page, tag } = Astro.props;
 ---
 
 <SiteLayout documentTitle={tag} current="tags" description={`タグ「${tag}」の記事一覧`}>
-  <PageHeading label="タグ" title={tag} count={page.total} />
+  <PageHeading title={tag} count={page.total} />
 
   <PostList posts={page.data} />
 

@@ -22,7 +22,7 @@ const { page, category } = Astro.props;
 ---
 
 <SiteLayout documentTitle={category} current="categories" description={`カテゴリー「${category}」の記事一覧`}>
-  <PageHeading label="カテゴリー" title={category} count={page.total} />
+  <PageHeading title={category} count={page.total} />
 
   <PostList posts={page.data} />
 

@@ -9,6 +9,6 @@ const tags = countByTag(posts);
 ---
 
 <SiteLayout documentTitle="タグ" current="tags">
-  <PageHeading label="タグ" title="すべてのタグ" count={tags.length} />
+  <PageHeading title="すべてのタグ" count={tags.length} />
   <TagCloud tags={tags} />
 </SiteLayout>

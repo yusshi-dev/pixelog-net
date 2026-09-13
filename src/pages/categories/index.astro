@@ -9,6 +9,6 @@ const categories = countByCategory(posts);
 ---
 
 <SiteLayout documentTitle="カテゴリー" current="categories">
-  <PageHeading label="カテゴリー" title="すべてのカテゴリー" count={categories.length} />
+  <PageHeading title="すべてのカテゴリー" count={categories.length} />
   <CategoryList categories={categories} />
 </SiteLayout>

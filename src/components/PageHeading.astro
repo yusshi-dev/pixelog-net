@@ -1,19 +1,15 @@
 ---
 interface Props {
-  /** 「カテゴリー」「タグ」など、何で絞り込んでいるかの種別 */
-  label: string;
   title: string;
   count?: number;
 }
 
-const { label, title, count } = Astro.props;
+const { title, count } = Astro.props;
 ---
 
-<header class="mb-9">
-  <p class="font-mono text-s2 text-ink3">
-    {label}{count !== undefined && <span class="ml-2">{count}件</span>}
-  </p>
-  <h1 class="mt-2 text-l3 font-bold leading-snug tracking-[-0.015em] text-ink">
+<header class="mb-9 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+  <h1 class="text-l3 font-bold leading-snug tracking-[-0.015em] text-ink">
     {title}
   </h1>
+  {count !== undefined && <span class="text-s1 text-ink3">{count}件</span>}
 </header>
