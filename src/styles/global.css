@@ -167,22 +167,35 @@ summary::-webkit-details-marker {
 }
 
 .prose h3 {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   margin: 2em 0 0.6em;
   font-size: var(--text-l1);
   font-weight: 700;
   line-height: 1.5;
   color: var(--ink);
 }
-.prose h3::before {
-  content: "";
-  flex: none;
-  width: 6px;
-  height: 6px;
-  border-radius: 1px;
-  background: var(--brand);
+
+.prose h4 {
+  margin: 1.8em 0 0.5em;
+  font-size: var(--text-m);
+  font-weight: 700;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.prose h5 {
+  margin: 1.6em 0 0.5em;
+  font-size: var(--text-s1);
+  font-weight: 700;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.prose h6 {
+  margin: 1.6em 0 0.5em;
+  font-size: var(--text-s2);
+  font-weight: 700;
+  line-height: 1.7;
+  color: var(--ink);
 }
 
 .prose a {
