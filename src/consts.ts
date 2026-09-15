@@ -4,8 +4,11 @@ export const SITE = {
   url: "https://pixelog.net",
   author: "yusshi",
   /** 記事に画像が無いときの OGP 画像（public 配下のパス） */
-  ogImage: "/pixelog.png",
+  ogImage: "/ogp.png",
 } as const;
+
+/** Google AdSense のパブリッシャーID */
+export const ADSENSE_CLIENT = "ca-pub-9027963984337121";
 
 /** グローバルナビ。key は各ページの current と対応する */
 export const NAV_ITEMS = [
